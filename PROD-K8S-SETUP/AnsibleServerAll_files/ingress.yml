@@ -1,0 +1,29 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress-myservice
+  namespace: emigrate-dev-ns  
+spec:
+  rules:
+    - host: emigrateui.mea-emigrate.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: emigrate-ui-svc
+                port:
+                  number: 80
+    - host: emigrateapi.mea-emigrate.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: gatewayservice-svc
+                port:
+                  number: 8080
+  ingressClassName: nginx
+
