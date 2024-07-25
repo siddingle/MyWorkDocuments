@@ -1,0 +1,52 @@
+#!/bin/bash
+
+# Check if both arguments are provided
+if [ $# -ne 2 ]; then
+    echo "Usage: $0 <service_name> <server_ip>"
+    exit 1
+fi
+# Assigning arguments to variables
+service_name=$1
+server_ip=$2
+if [ ${#service_name} -lt 3 ]; then
+ echo "Error: Service Name Should have First three letter "
+ exit 1
+fi
+# Source and destination paths
+source_path="/opt/emigrate/server/packages/$service_name*.jar"
+destination_path="/opt/emigrate/server/packages/"
+
+# Veirifying right service name
+ls -1 $service_name*.jar >/dev/null 2>&1
+
+if [ $? -ne 0 ] && [ "$service_name" != "All" ]; then
+    echo "Error: No such file or directory."
+    exit 1
+fi
+if [ "$server_ip" != "17" ] && [ "$server_ip" != "18" ] && [ "$server_ip" != "19" ]; then
+    echo "Error: Not a DR Application Server"
+    exit 1
+fi
+
+#echo "Copying files for service $(ls -1 $service_name*.jar) to 192.168.145.$server_ip..."
+# Using scp to copy files securely
+
+
+if [ "$service_name" == "Int" ]; then
+echo "Copying files for service $(ls -1 $service_name*.jar) to 192.168.145.$server_ip..."
+echo "IntegrationService will get copied to batch directory"
+scp -pr $source_path meauser@192.168.145.$server_ip:$destination_path/batch/
+elif [ "$service_name" == "All" ]; then
+echo "Coping all the Services"
+scp -pr /opt/emigrate/server/packages/*.jar meauser@192.168.145.$server_ip:$destination_path/
+else
+echo "Copying files for service $(ls -1 $service_name*.jar) to 192.168.145.$server_ip..."
+scp -pr $source_path meauser@192.168.145.$server_ip:$destination_path/
+fi
+
+# Check if the copy operation was successful
+if [ $? -eq 0 ]; then
+    echo "Files copied successfully."
+else
+    echo "Error: Failed to copy files."
+fi

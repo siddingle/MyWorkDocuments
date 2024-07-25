@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name:  administrationservice
+  labels:
+    app: administrationservice
+  namespace: emigrate-dev-ns
+spec:
+  replicas: 1 # Set the number of desired replicas
+  selector:
+    matchLabels:
+      app: administrationservice
+  template:
+    metadata:
+      labels:
+        app: administrationservice
+    spec:
+      containers:
+      - name:  administrationservice
+        image: nexuspoc.mea-emigrate.com/administrationservice:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080  # Set the container port
+        # volumeMounts:
+        # - name: data-volume
+        #   mountPath: "${mountpath}"
+        # - name: data-volumeb
+        #   mountPath: "${mountpath1}"
+        resources:
+          limits:
+            cpu: 1000m
+            memory: 1G
+          requests:
+            cpu: 500m
+            memory: 500Mi
+      # volumes:
+      # - name: data-volume
+      #   hostPath:
+      #     path: "${hostpath}"
+      # - name: data-volumeb
+      #   hostPath:
+      #     path: "${hostpath1}"
+      imagePullSecrets:
+       - name: nexuspoc
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: administrationservice-svc
+  labels:
+    app: administrationservice
+  namespace: emigrate-dev-ns
+spec:
+  # type: NodePort
+  selector:
+    app: administrationservice
+  ports:
+    - port: 8080      # Port on the service
+      targetPort: 8080  # Port on the pod
+      # protocol: TCP      

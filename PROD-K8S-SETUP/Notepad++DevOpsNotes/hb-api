@@ -1,0 +1,201 @@
+	curl --location 'http://127.0.0.1:8081/admin/hb'      
+	curl --location 'http://127.0.0.1:8181/auth/hb'      
+	curl --location 'http://127.0.0.1:8084/em/hb'
+	curl --location 'http://127.0.0.1:8083/fr/hb'
+	curl --location 'http://127.0.0.1:8080/gws/hb'
+	curl --location 'http://127.0.0.1:8092/gs/hb'
+	curl --location 'http://127.0.0.1:8096/is/hb'
+	curl --location 'http://127.0.0.1:8086/ns/hb'
+	curl --location 'http://127.0.0.1:8094/payment/hb'
+	curl --location 'http://127.0.0.1:8085/rs/hb'
+	curl --location 'http://127.0.0.1:8082/ra/hb'
+	curl --location 'http://127.0.0.1:8087/ss/hb'
+	curl --location 'http://127.0.0.1:8088/wf/process/hb'
+	
+	
+	
+	
+	
+	
+	
+#!/bin/bash
+# Define an array of service URLs and corresponding names
+declare -A service_names=(
+    ["http://127.0.0.1:8080/api/admin/hb"]="AdministrationService"
+    ["http://127.0.0.1:8080/api/auth/hb"]="AuthenticationService"
+    ["http://127.0.0.1:8080/api/em/hb"]="EmigrantService"
+	["http://127.0.0.1:8080/api/fr/hb"]="ForeinRecruiterService"
+    ["http://127.0.0.1:8080/api/gws/hb"]="GatewayService"
+    ["http://127.0.0.1:8080/api/gs/hb"]="GrievanceService"
+	["http://127.0.0.1:8080/api/is/hb"]="InsuranceService"
+    ["http://127.0.0.1:8080/api/ns/hb"]="NotificationService"
+    ["http://127.0.0.1:8080/api/payment/hb"]="PaymentService"
+	["http://127.0.0.1:8080/api/rs/hb"]="ReportService"
+    ["http://127.0.0.1:8080/api/ra/hb"]="RecrutingAgentService"
+    ["http://127.0.0.1:8080/api/ss/hb"]="SecurityService"
+	["http://127.0.0.1:8080/api/wf/process/hb"]="WorkflowService"
+	
+)
+# Iterate through each URL and get the service name
+for url in "${!service_names[@]}"; do
+    service_name="${service_names[$url]}"
+    response_code=$(curl -s -o /dev/null -w "%{http_code}" "$url")    
+    echo "Service Name: $service_name"
+    echo "URL: $url"
+    echo "HTTP Response Code: $response_code"
+    echo "---"
+done	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+
+
+-rwxr-xr-x. 1 meauser meauser 1945 Mar  9 21:07 3RunSvrJarAuthentication.sh
+-rwxr-xr-x. 1 meauser meauser 1868 Mar  8 17:53 5RunSvrJarWorkflow.sh
+-rwxr-xr-x. 1 meauser meauser 1914 Mar  8 15:13 7RunSvrJarForeignEmployer.sh
+-rwxr-xr-x. 1 meauser meauser 1867 Mar  8 15:00 4RunSvrJarSecurity.sh
+-rwxr-xr-x. 1 meauser meauser 1850 Mar  8 14:53 12RunSvrJarGrievanceService.sh
+-rwxr-xr-x. 1 meauser meauser 1901 Mar  8 14:51 8RunSvrJarRecruitAgent.sh
+-rwxr-xr-x. 1 meauser meauser  440 Mar  8 12:40 startAll.sh
+-rwxr-xr-x. 1 meauser meauser 2155 Mar  7 19:00 2RunSvrJarAdmin.sh
+-rwxr-xr-x. 1 meauser meauser 1856 Feb  3 16:54 15RunSvrJarInsurance.sh
+-rwxr-xr-x. 1 meauser meauser 1794 Feb  3 16:54 14RunSvrJarPayment.sh
+-rwxr-xr-x. 1 meauser meauser 1806 Feb  3 16:53 10RunSvrJarReport.sh
+-rwxr-xr-x. 1 meauser meauser 1859 Feb  3 16:51 9RunSvrJarNotification.sh
+-rwxr-xr-x. 1 meauser meauser 1802 Feb  3 16:48 6RunSvrJarEmigrant.sh
+-rwxr-xr-x. 1 meauser meauser 2034 Feb  3 16:32 1RunSvrJarGateway-api.sh
+
+
+
+
+
+
+
+-rwxrwxrwx. 1 root root 3070 Mar 12 14:01 copyjenkinbuild.sh
+-rwxrwxrwx  1 root root  328 Nov  5 19:16 copyIntegration.sh
+-rwxrwxrwx  1 root root  324 Oct 10 17:11 copyInsurance.sh
+-rwxrwxrwx  1 root root  300 Sep 14  2023 copyPayment.sh
+-rwxrwxrwx. 1 root root  334 Aug  9  2023 copyAdmin.sh
+-rwxrwxrwx. 1 root root  324 Aug  9  2023 copyWorkflow.sh
+-rwxrwxrwx. 1 root root  324 Aug  9  2023 copyDocument.sh
+-rwxrwxrwx. 1 root root  341 Aug  9  2023 copyFE.sh
+-rwxrwxrwx. 1 root root  323 Aug  9  2023 copyGateway.sh
+-rwxrwxrwx. 1 root root  339 Aug  9  2023 copyRA.sh
+-rwxrwxrwx. 1 root root  323 Aug  9  2023 copyGrievance.sh
+-rwxrwxrwx. 1 root root  326 Aug  9  2023 copyNotification.sh
+-rwxrwxrwx. 1 root root  324 Aug  9  2023 copyAuthnetication.sh
+-rwxrwxrwx. 1 root root  321 Aug  9  2023 copyReport.sh
+-rwxrwxrwx. 1 root root  324 Aug  9  2023 copySecurity.sh
+-rwxrwxrwx. 1 root root  319 Aug  9  2023 copyEC.sh
+-rwxrwxrwx. 1 root root  310 Aug  9  2023 copyEReport.sh
+
+
+
+
+#!/bin/bash
+# Define an array of service URLs and corresponding names
+declare -A emigrate_services=(
+    ["http://127.0.0.1:8080/api/admin/hb2"]="AdministrationService"
+    ["http://127.0.0.1:8080/api/auth/hb"]="AuthenticationService"
+    ["http://127.0.0.1:8080/api/em/hb"]="EmigrantService"
+    ["http://127.0.0.1:8080/api/fr/hb"]="ForeinRecruiterService"
+    ["http://127.0.0.1:8080/gws/hb"]="GatewayService"
+    ["http://127.0.0.1:8080/api/gs/hb"]="GrievanceService"
+    ["http://127.0.0.1:8080/api/is/hb"]="InsuranceService"
+    ["http://127.0.0.1:8080/api/ns/hb"]="NotificationService"
+    ["http://127.0.0.1:8080/api/payment/hb"]="PaymentService"
+    ["http://127.0.0.1:8080/api/rs/hb"]="ReportService"
+    ["http://127.0.0.1:8080/api/ra/hb"]="RecrutingAgentService"
+    ["http://127.0.0.1:8080/api/ss/hb"]="SecurityService"
+    ["http://127.0.0.1:8080/api/wf/process/hb"]="WorkflowService"
+
+)
+
+declare -A run_messages=(
+    ["http://127.0.0.1:8080/api/admin/hb2"]="2RunSvrJarAdmin.sh"
+    ["http://127.0.0.1:8080/api/auth/hb"]="3RunSvrJarAuthentication.sh"
+    ["http://127.0.0.1:8080/api/em/hb"]="6RunSvrJarEmigrant.sh"
+    ["http://127.0.0.1:8080/api/fr/hb"]="7RunSvrJarForeignEmployer.sh"
+    ["http://127.0.0.1:8080/gws/hb"]="1RunSvrJarGateway-api.sh"
+    ["http://127.0.0.1:8080/api/gs/hb"]="12RunSvrJarGrievanceService.sh"
+    ["http://127.0.0.1:8080/api/is/hb"]="15RunSvrJarInsurance.sh"
+    ["http://127.0.0.1:8080/api/ns/hb"]="9RunSvrJarNotification.sh"
+    ["http://127.0.0.1:8080/api/payment/hb"]="14RunSvrJarPayment.sh"
+    ["http://127.0.0.1:8080/api/rs/hb"]="10RunSvrJarReport.sh"
+    ["http://127.0.0.1:8080/api/ra/hb"]="8RunSvrJarRecruitAgent.sh"
+    ["http://127.0.0.1:8080/api/ss/hb"]="4RunSvrJarSecurity.sh"
+    ["http://127.0.0.1:8080/api/wf/process/hb"]="5RunSvrJarWorkflow.sh"
+    )
+for url in "${!emigrate_services[@]}"; do
+    service_name="${emigrate_services[$url]}"
+    message="${run_messages[$url]}"
+    response_code=$(curl -s -o /dev/null -w "%{http_code}" "$url")
+
+    echo "Service Name: $service_name"
+    echo "URL: $url"
+    echo "HTTP Response Code: $response_code"
+   # echo "$message"
+    # Check if the response code indicates a failure (not 200 OK)
+    if [[ $response_code -ne 200 ]]; then
+        echo "$service_name is down Message: $message"
+    fi
+
+    echo "---"
+done
+
+
+
+
+
+
+
+
+
+
+#!/bin/bash
+
+url="http://example.com/service"
+
+# Set timeout in seconds for curl
+timeout=10
+
+# Make the curl request and capture the response
+response=$(curl -s -m "$timeout" "$url")
+
+# Check if curl was successful
+if [ $? -eq 0 ]; then
+    # Check if the response is empty or contains an error message
+    if [ -z "$response" ]; then
+        echo "Curl did not provide any response or got stuck."
+        # Add your error handling or retry logic here
+    else
+        # Process the response here
+        echo "Response: $response"
+    fi
+else
+    echo "Curl request failed."
+    # Add your error handling or retry logic here
+fi
+
+
+
+
+
+
+
+
+
+
+
+
+

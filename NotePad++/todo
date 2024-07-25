@@ -1,0 +1,220 @@
+Before go live
+
+Database point change
+Remove exisitng docs
+enabled OTP captcha
+remove tomcat related logs after one week
+
+
+
+
+backend service
+689e936e6a67cc8f27272039959d2844b4ea4496
+
+
+
+
+User ID: info@emigrate.gov.in
+Password: Inf0tech**123
+Email Server: smtp.emigrate.gov.in /192.168.155.30
+#Port : 587 
+Port : 25
+Encryption : TLS
+
+
+
+sed -i 's|'10.100.20.3:3306'|'10.40.10.5:3306,10.40.10.6:3306'|g' ./services_PROD.properties
+PrOdUsEr@#$2024
+
+sed -i 's|PrOdUsEr@#$2024|Em!Grat3#2o34!@#$|g' ./services_PROD.properties
+
+
+
+
+
+
+
+
+
+
+
+<IfModule mod_headers.c>
+Header unset ETag
+Header set Cache-Control "max-age=0, no-cache, no-store, must-revalidate"
+Header set Pragma "no-cache"
+Header set Expires "Wed, 12 Jan 1980 05:00:00 GMT"
+Header edit Set-Cookie ^(.*)$ $1;HttpOnly;Secure;SameSite=None
+Header set ProcessingTime "%D"
+Header unset Server
+Header set Server "Microsoft-IIS/8.5"
+Header always set X-XSS-Protection: "1; mode=block"
+Header always set Referrer-Policy: "strict-origin-when-cross-origin"
+Header always set Strict-Transport-Security: "max-age=31536000; includeSubDomains; preload"
+Header unset Access-Control-Allow-Origin
+Header always set Access-Control-Allow-Origin: https://emigrate.gov.in
+Header unset X-Frame-Options
+Header always set X-Frame-Options "sameorigin"
+Header unset X-Content-Type-Options
+Header always set X-Content-Type-Options "nosniff"
+Header unset Content-Security-Policy
+Header always set Content-Security-Policy "default-src 'self' blob: data: pay.billdesk.com emigrate.gov.in;style-src 'self' 'unsafe-inline' pgi.billdesk.com;script-src 'self' 'unsafe-inline' 'unsafe-eval' pgi.billdesk.com;object-src 'none'; connect-src 'self' data: api.ipify.org emigrate.gov.in pgi.billdesk.com;worker-src 'self' blob: emigrate.gov.in;"
+</IfModule>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/etc/dnf/dnf.conf
+yum install mod_security
+ServerSignature Off
+ServerTokens Prod
+
+/usr/libexec/httpd-ssl-gencerts
+
+
+
+
+
+delete all except top
+ls -t *.hprof | tail -n +2 | xargs rm -f
+
+check the memory usage of java process
+ps aux | grep java | awk '{print $2, $4, $6, $11}'
+
+curl -X POST http://192.168.150.8/job/EMigrate-DocumentServerService/build
+
+
+
+
+
+
+ELK task
+10days for application logs
+6months of access logs
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ <appender name="SECURITY_LOGS" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>/opt/emigrate/logs/security/xxx-SecurityIncident.log</file>
+
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>/opt/emigrate/logs/security/archived/xxx-SecurityIncident.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <!-- each archived file, size max 2MB -->
+                        <maxFileSize>100MB</maxFileSize>
+            <!-- total size of all archive files, if total size > 200MB,
+                                it will delete old archived file -->
+            <totalSizeCap>2048MB</totalSizeCap>
+            <!-- 30 days to keep -->
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+
+        <encoder>
+            <pattern> %d  - %X{TRNS_ID} -  %p %c{1.} [%t] %m%n</pattern>
+        </encoder>
+    </appender>
+	
+	
+	
+	
+	
+	<appender name="SECURITY_LOGS" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>/home/migration/emigrate/logs/security/xxx-SecurityIncident.log</file>
+
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>/home/migration/emigrate/logs/security/archived/xxx-SecurityIncident.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <!-- each archived file, size max 2MB -->
+                        <maxFileSize>200KB</maxFileSize>
+            <!-- total size of all archive files, if total size > 200MB,
+                                it will delete old archived file -->
+            <totalSizeCap>2MB</totalSizeCap>
+            <!-- 30 days to keep -->
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+
+        <encoder>
+            <pattern> %d  - %X{TRNS_ID} -  %p %c{1.} [%t] %m%n</pattern>
+        </encoder>
+    </appender>
+
+<appender-ref ref="SECURITY_LOGS"/>
+
+
+
+--------------------------------------------
+
+This table contains 1 rows.
+Shard
+Index
+Failure type
+
+0
+socket-server-2024.04.05
+illegal_argument_exception
+Node
+MoW8FOkDRB-Bq9OJMhgTyQ
+Reason
+The length [4795447] of field [message] in doc[349024]/index[socket-server-2024.04.05] exceeds the [index.highlight.max_analyzed_offset] limit [1000000]. To avoid this error, set the query parameter [max_analyzed_offset] to a value less than index setting [1000000] and this will tolerate long field values by truncating them.
+
+
+
+
+
+
+
+

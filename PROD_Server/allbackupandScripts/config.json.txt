@@ -1,0 +1,20 @@
+{
+    "production": true,
+    "PWD_MASK_ENABLED": true,
+    "CAPTCHA_ENABLED": false,
+    "SESSION_DURATION": 3600000,
+    "IDLE_TIMEOUT": 600,
+    "API_URL": "https://emigrate.gov.in/api",
+    "DEV_API_URL": "https://emigrate.gov.in/api",
+    "DEV_URL_REPORT": "https://emigrate.gov.in/api",
+    "STATIC_FILE_PATH": "https://emigrate.gov.in",
+    "DEV_URL_IP": "https://api.ipify.org/?format=json",
+    "DEV_URL_EMAIL_REPORT": "https://emigrate.gov.in/emigrateReport",
+    "DEV_URL_CDN": "https://emigrate.gov.in/assets/pdfs",
+    "PAYU_URL": "https://secure.payu.in/_payment",
+    "SBI_URL": "https://www.sbiepay.sbi/secure/AggregatorHostedListener",
+    "BILLDESK_URL": "https://pgi.billdesk.com/pgidsk/PGIMerchantPayment",
+    "IFFCO_TOKIO_URL": "https://pbby.iffcotokio.co.in/ui/GCPolicyD.aspx",
+    "AKASHAIC_BI": "https://dashboard.emigrate.gov.in/login/",
+    "ENV_CODE": "prodlive"
+}

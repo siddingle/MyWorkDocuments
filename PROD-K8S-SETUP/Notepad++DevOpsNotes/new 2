@@ -1,0 +1,135 @@
+[req]
+default_bits = 2048
+distinguished_name = req_distinguished_name
+req_extensions = req_ext
+prompt = no
+[req_distinguished_name]
+countryName = IN
+stateOrProvinceName = Delhi
+localityName = Delhi
+organizationName = MEA
+organizationalUnitName = EMigrate
+commonName = nexus.mea-emigrate.com
+emailAddress = symc@trigyn.com
+[req_ext]
+subjectAltName = @alt_names
+[alt_names]
+DNS.1 = *.mea-emigrate.com
+IP.1 = 192.168.150.8
+
+openssl req -new -key nd.key -out nd.csr -days 3650 -config san.cfg\
+
+openssl req -verify -in nd.csr -text -noout
+
+openssl verify -verbose -CAfile ca.crt nd.crt
+openssl rsa -modulus -noout -in nd.key | openssl md5
+openssl x509 -modulus -noout -in nd.crt | openssl md5
+
+-----------------------------------------------------------------------------------------------
+
+keytool -genkeypair -keystore keystore.jks -storepass password -keypass password -alias jetty -keyalg RSA -keysize 2048 -validity 5000 -dname "CN=*.mea-emigrate.com, OU=Emigrate, O=MEA, L=Delhi, ST=Delhi, C=IN" -ext "SAN=DNS:mea-emigrate.com,IP:192.168.150.8" -ext "BC=ca:true"
+
+
+
+keytool -printcert -sslserver nexus.mea-emigrate.com:443 -rfc
+/etc/pki/ca-trust/source/anchors
+update-ca-trust extract
+systemctl restart docker
+
+
+
+
+
+
+
+sshpass -vvv -p Meeting#4321 ssh meauser@192.168.150.17 'bash -s' < get_host_info.sh
+
+
+
+
+ssh-keygen -t rsa -b 2048
+
+ssh-copy-id meauser@192.168.150.18
+
+
+ssh-keygen -t rsa -b 2048 -f ~/.ssh/id_rsa_remote1
+ssh-keygen -t rsa -b 2048 -f ~/.ssh/id_rsa_remote2
+
+# Copy public key for remote host 1
+ssh-copy-id -i ~/.ssh/id_rsa.pub meauser@192.168.150.18
+
+ssh -i ~/.ssh/id_rsa.pub meauser@192.168.150.18
+
+
+
+
+
+
+
+#!/bin/bash
+
+# Remote host details
+remote_user="your_remote_user"
+private_key_remote1="/root/.ssh/id_rsa_remote1"
+private_key_remote2="/root/.ssh/id_rsa_remote2"
+remote_host1="remote_host1"
+remote_host2="remote_host2"
+
+# Commands to execute on both remote hosts
+commands=(
+    "echo 'Hello from remote host 1'"
+    "ls -l"
+    # Add more commands as needed
+)
+
+# Function to execute commands on a remote host
+execute_commands() {
+    local private_key=$1
+    local remote_host=$2
+
+    echo "Executing commands on $remote_host..."
+    for command in "${commands[@]}"; do
+        echo "Running command: $command"
+        ssh -i "$private_key" "$remote_user@$remote_host" "$command"
+    done
+}
+
+# Execute commands on remote host 1
+execute_commands "$private_key_remote1" "$remote_host1"
+
+# Execute commands on remote host 2
+execute_commands "$private_key_remote2" "$remote_host2"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+kubectl exec -it administrationservice-79857d4c49-4phpr -- /bin/sh
+
+apt update
+apt install -y telnet
+
+exit
+
+kubectl get pods administrationservice-79857d4c49-4phpr -o=jsonpath='{.spec.containers[*].name}'
+
+
+
+
+
+
+kubectl exec -it gatewayservice-9b5bcdd-qthmq -- telnet 192.168.150.19 3306
+
+kubectl exec -it gatewayservice-9b5bcdd-qthmq -- telnet -w 1 192.168.150.19 3306
+

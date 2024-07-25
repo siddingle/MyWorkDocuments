@@ -1,0 +1,246 @@
+create passwordless ssh connection 
+if you want to connect from server1 to server2
+from server1
+ssh-keygen -t rsa
+enter for default location to store key
+from server1
+ssh-copy-id user@server2
+
+
+run local shell on remote server 
+ssh root@192.168.150.22 'bash -s' < localrunscript.sh
+
+
+check memory consumption
+ps -eo pid,ppid,cmd,%mem,%cpu --sort=-%mem | head
+
+get only memory consumption
+ps -p <pid> -o rss=
+
+to check dns config it is pointing to internal IP or which ip
+/etc/sysconfig/network-scripts/
+
+
+sed -i 's|'192.168.150.13:3306'|'10.40.10.5:3306'|g' ./services.properties
+ 
+copy from one server to another excluding directory 
+rsync -av --exclude='emigrate' root@192.168.150.5:/home/migration/* .
+
+
+sudo yum makecache
+
+subscription-manager register --username pokharkarkiran --password Inf0tech --auto-attach
+
+sudo yum update java-11-openjdk
+
+
+
+----------------------------------------------------------------------
+nohup java -Xms2g -Xmx2g -Dlogging.config=/workspace/logConfig/securityServiceLogConfig.xml -Xlog:gc*:file=/home/migration/emigrate/logs/SecurityService-GC.log:time -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/home/migration/emigrate/logs -jar SecurityService-0.0.1-SNAPSHOT.jar --spring.config.additional-location=services_UAT.properties -> startup-logs/SecurityService.out &
+
+
+nohup java -Xms2g -Xmx2g -Dlogging.config=/opt/emigrate/server/packages/logConfig/securityServiceLogConfig.xml -Xlog:gc*:file=/opt/emigrate/logs/gcLogs/SecurityService-GC.log:time -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/opt/emigrate/logs/gcLogs -Dserver.tomcat.threads.max=400 -Djava.net.preferIPv4Stack=true -javaagent:/opt/emigrate/server/packages/monitoringAgent/vunet-opentelemetry-javaagent-1.18.0.jar -Dotel.resource.attributes=application=Emigrate -Dotel.service.name=SecurityService -Dotel.metrics.exporter=none -Dotel.exporter.otlp.endpoint=http://192.168.210.24:4317 -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.port=5087 -Dcom.sun.management.jmxremote.rmi.port=5087 -Dcom.sun.management.jmxremote.host=0.0.0.0 -Djava.rmi.server.hostname=0.0.0.0 -jar /opt/emigrate/server/packages/SecurityService-0.0.1-SNAPSHOT.jar --spring.config.additional-location=/opt/emigrate/server/packages/services_PROD.properties -> startup-logs/SecurityService.out &
+
+
+
+
+scp root@192.168.150.22:/home/migration/emigrate/logs/java_pid1370542.hprof .
+
+
+
+
+
+
+EMAIL_HOST=smtp.office365.com
+EMAIL_PORT=587
+EMAIL_USERNAME=emigrate.test@trigyn.com
+EMAIL_PASSWORD=znsxppktynrjdhhm
+EMAIL_SMTP_AUTH=true
+EMAIL_SMTP_STARTTLS=true
+
+
+
+EMAIL_HOST=smtp.office365.com
+EMAIL_PORT=587
+EMAIL_USERNAME=meauser@mea-emigrate.com
+EMAIL_PASSWORD=Meeting#4321
+EMAIL_SMTP_AUTH=true
+EMAIL_SMTP_STARTTLS=false
+
+
+
+
+
+
+sed -i 's|EMAIL_SMTP_STARTTLS=false|EMAIL_SMTP_STARTTLS=true|g' ./services_UAT.properties
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+app1.mea-emigrate.com
+192.168.150.35
+
+
+
+
+
+app1.mea-emigrate.com/api
+192.168.150.35:8080/api
+
+
+
+
+
+
+BRANCH=STQC-TO-QA-MERGE
+
+
+
+ENV=STQC
+environment.stqc.ts
+npm run build:stqc
+
+
+
+
+ENV=DC=PROD
+environment.prod.ts
+npm run build:prod
+
+
+sed -i 's|'smtp.mea-emigrate.com'|'172.20.50.27'|g' ./services_PROD.properties
+
+sed -i 's|'jdbc:mariadb:loadbalance://10.100.20.3:3306'|'jdbc:mariadb://10.100.20.3:3306'|g' ./services_PROD.properties
+
+jdbc:mariadb://10.100.20.3:3306
+jdbc:mariadb:loadbalance://10.100.20.3:3306
+
+
+
+
+Limiting caches
+sudo sh -c 'echo 1 > /proc/sys/vm/drop_caches'
+we can edit this file to
+/etc/sysctl.conf
+
+to apply those changes
+sudo sysctl -p
+/proc/sys/vm/vfs_cache_pressure
+sudo sysctl vm.swappiness=10
+sudo sysctl vm.vfs_cache_pressure=150
+
+Current value on app2 env 
+[root@emigrate-MIG ~]# sudo sysctl vm.swappiness
+vm.swappiness = 30
+[root@emigrate-MIG ~]# sudo sysctl vm.vfs_cache_pressure
+vm.vfs_cache_pressure = 100
+
+
+
+
+
+Alias /error_pages/ /var/www/error_pages/
+ErrorDocument 404 /error_pages/404.png
+ErrorDocument 401 /error_pages/404.png
+ErrorDocument 403 /error_pages/404.png
+
+
+
+
+
+
+
+
+
+
+UI-
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

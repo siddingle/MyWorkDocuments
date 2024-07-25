@@ -1,0 +1,60 @@
+#FROM openjdk:11.0-jre-slim
+#FROM registry.access.redhat.com/ubi9/openjdk-11-runtime:1.18-4
+FROM nexuspoc.mea-emigrate.com/ubi9/openjdk-11-runtime:1.18-4
+
+ARG BUILD_ID            xx
+ENV SERVICE_NAME        AdministrationService
+ENV VERSION             0.0.1-SNAPSHOT
+ENV SERVICE_PORT        8080
+ENV LOGSTASH_XML        adminServiceLogConfig
+ARG ENVIRONMENT         QA
+#ENV WORKSPACE_DIR      ./
+ENV WORK_DIR            /home/emigrate
+#ENV RUN_SCRIPT_NAME    RunSvrJarAdmin.sh
+ARG APP_HOST_IP_ADDRESS 127.0.0.1
+
+# set the variables
+ENV SERVICE_PROPERTIES services_${ENVIRONMENT}.properties
+
+RUN echo "BUILD_ID":${BUILD_ID}
+RUN echo "SERVICE_NAME":${SERVICE_NAME}
+RUN echo "VERSION":${VERSION}
+RUN echo "SERVICE_PORT":${SERVICE_PORT}
+RUN echo "ENVIRONMENT":${ENVIRONMENT}
+#RUN echo "RUN_SCRIPT_NAME":${RUN_SCRIPT_NAME}
+RUN echo "SERVICE_PROPERTIES":${SERVICE_PROPERTIES}
+#RUN echo "WORKSPACE_DIR":${WORKSPACE_DIR}
+RUN echo "WORK_DIR":${WORK_DIR}
+RUN echo "APP_HOST_IP_ADDRESS":${APP_HOST_IP_ADDRESS}
+
+# set the work dir in container
+WORKDIR ${WORK_DIR}
+
+# to verify the empty directories are created
+RUN mkdir -p ${WORK_DIR}
+RUN mkdir -p ${WORK_DIR}/startup-logs
+
+#Installing packages
+#RUN apt-get update
+#RUN apt-get install curl -y
+#RUN apt-get install telnet -y
+#RUN apt-get update && apt-get install -y fontconfig libfreetype6 && rm -rf /var/lib/apt/lists/*
+
+#Timezone IST
+RUN ln -sf /usr/share/zoneinfo/Asia/Kolkata /etc/localtime && echo "Asia/Kolkata" > /etc/timezone
+
+# COPY configurations
+COPY ${SERVICE_NAME}-${VERSION}.jar     ${WORK_DIR}/${SERVICE_NAME}-${VERSION}.jar
+COPY ./${SERVICE_PROPERTIES}            ${WORK_DIR}/${SERVICE_PROPERTIES}
+#COPY ${RUN_SCRIPT_NAME}                ${WORK_DIR}/${RUN_SCRIPT_NAME}
+COPY ${LOGSTASH_XML}.xml                ${WORK_DIR}/${LOGSTASH_XML}.xml
+
+# set the access rights on the file
+#RUN chmod -R 777   ${WORK_DIR}
+#RUN sed -i 's/127.0.0.1/'"${APP_HOST_IP_ADDRESS}"'/g' ${WORK_DIR}/${SERVICE_PROPERTIES}
+
+EXPOSE ${SERVICE_PORT}
+
+ENTRYPOINT ["/bin/bash", "-c", "java -Dlogging.config=${WORK_DIR}/${LOGSTASH_XML}.xml -jar ${WORK_DIR}/${SERVICE_NAME}-${VERSION}.jar --spring.config.additional-location=${SERVICE_PROPERTIES}"]
+#ENTRYPOINT ["sh", "/home/migration/emigrate/server/packages/RunSvrJarAdmin.sh"]
+# CMD ["sh", "-c", ${WORK_DIR}/${RUN_SCRIPT_NAME} ]

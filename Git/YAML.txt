@@ -1,0 +1,17 @@
+YAML -YET ANOTHER MARKUP LANGUAGE//YAML AINT MARKUP LANGUAGE
+Its a data format use to exchange data  which is similar to xml json
+we can store data not commands 
+
+Serialization-- Transmission from object in stream line so we can store its states(YAML file).
+it can be configured in docker ,kubernates
+
+benefits 
+simple and easy
+easily convertable 
+strict syntax
+powerful for representing complex data
+
+
+representation
+
+store in the form of key and value

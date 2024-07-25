@@ -1,0 +1,14 @@
+#!/bin/sh
+
+Module=EMigrate-AdministrationService
+FileName=AdministrationService-0.0.1-SNAPSHOT.jar
+run=2RunSvrJarAdmin.sh
+buildn="$1"
+if [ $buildn -gt 0 ]
+then
+   echo "Copy $Module $FileName $buildn"
+   ./copyjenkinbuild.sh $Module $FileName $run $buildn
+else
+   echo "Copy $Module $FileName latestBuild "
+   ./copyjenkinbuild.sh $Module $FileName $run
+fi

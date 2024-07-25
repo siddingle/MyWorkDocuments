@@ -1,0 +1,211 @@
+https://nilesh93.medium.com/kubernetes-on-centos-7-with-firewalld-e7b53c1316af       documentation to follow
+
+lscpu 
+amd 64
+to check ip in use or not
+ sudo netstat -lnp | grep 6443
+
+https://computingforgeeks.com/install-mirantis-cri-dockerd-as-docker-engine-shim-for-kubernetes/ 
+for cri dockerd
+
+1) Docker Installed
+https://docs.docker.com/engine/install/centos/#install-using-the-repository
+swapoff -a
+sudo yum install -y yum-utils
+sudo yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+sudo yum install docker-ce docker-ce-cli docker-buildx-plugin docker-compose-plugin
+sudo systemctl start docker
+sudo docker run hello-world
+reboot
+if getting any error while starting docker 
+
+2)Docker Container Runtime Install cri-dockerd on Linux
+https://computingforgeeks.com/install-mirantis-cri-dockerd-as-docker-engine-shim-for-kubernetes/ 
+systemctl status docker
+check docker is running or not
+
+sudo yum -y install git wget curl
+VER=$(curl -s https://api.github.com/repos/Mirantis/cri-dockerd/releases/latest|grep tag_name | cut -d '"' -f 4|sed 's/v//g')
+echo $VER
+
+wget https://github.com/Mirantis/cri-dockerd/releases/download/v${VER}/cri-dockerd-${VER}.amd64.tgz
+tar xvf cri-dockerd-${VER}.amd64.tgz
+sudo mv cri-dockerd/cri-dockerd /usr/local/bin/
+wget https://raw.githubusercontent.com/Mirantis/cri-dockerd/master/packaging/systemd/cri-docker.service
+wget https://raw.githubusercontent.com/Mirantis/cri-dockerd/master/packaging/systemd/cri-docker.socket
+sudo mv cri-docker.socket cri-docker.service /etc/systemd/system/
+sudo sed -i -e 's,/usr/bin/cri-dockerd,/usr/local/bin/cri-dockerd,' /etc/systemd/system/cri-docker.service
+
+sudo systemctl daemon-reload
+sudo systemctl enable cri-docker.service
+sudo systemctl enable --now cri-docker.socket
+systemctl status cri-docker.socket
+
+
+
+3) Kubeadm Installation 
+https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/#verify-mac-address
+sudo setenforce 0
+sudo sed -i 's/^SELINUX=enforcing$/SELINUX=permissive/' /etc/selinux/config
+
+
+cat <<EOF | sudo tee /etc/yum.repos.d/kubernetes.repo
+[kubernetes]
+name=Kubernetes
+baseurl=https://pkgs.k8s.io/core:/stable:/v1.28/rpm/
+enabled=1
+gpgcheck=1
+gpgkey=https://pkgs.k8s.io/core:/stable:/v1.28/rpm/repodata/repomd.xml.key
+exclude=kubelet kubeadm kubectl cri-tools kubernetes-cni
+EOF
+
+sudo yum install -y kubelet kubeadm kubectl --disableexcludes=kubernetes
+sudo systemctl enable --now kubelet
+ sudo systemctl status --now kubelet
+ 
+--------------------------------------------------------------------------------------------------------------------------------- 
+ 
+CNI_PLUGINS_VERSION="v1.3.0"
+ARCH="amd64"
+DEST="/opt/cni/bin"
+sudo mkdir -p "$DEST"
+curl -L "https://github.com/containernetworking/plugins/releases/download/${CNI_PLUGINS_VERSION}/cni-plugins-linux-${ARCH}-${CNI_PLUGINS_VERSION}.tgz" | sudo tar -C "$DEST" -xz
+
+
+
+DOWNLOAD_DIR="/usr/local/bin"
+sudo mkdir -p "$DOWNLOAD_DIR"
+
+
+
+CRICTL_VERSION="v1.28.0"
+ARCH="amd64"
+curl -L "https://github.com/kubernetes-sigs/cri-tools/releases/download/${CRICTL_VERSION}/crictl-${CRICTL_VERSION}-linux-${ARCH}.tar.gz" | sudo tar -C $DOWNLOAD_DIR -xz
+
+
+
+
+
+RELEASE="$(curl -sSL https://dl.k8s.io/release/stable.txt)"
+ARCH="amd64"
+cd $DOWNLOAD_DIR
+sudo curl -L --remote-name-all https://dl.k8s.io/release/${RELEASE}/bin/linux/${ARCH}/{kubeadm,kubelet}
+sudo chmod +x {kubeadm,kubelet}
+
+RELEASE_VERSION="v0.16.2"
+curl -sSL "https://raw.githubusercontent.com/kubernetes/release/${RELEASE_VERSION}/cmd/krel/templates/latest/kubelet/kubelet.service" | sed "s:/usr/bin:${DOWNLOAD_DIR}:g" | sudo tee /etc/systemd/system/kubelet.service
+sudo mkdir -p /etc/systemd/system/kubelet.service.d
+curl -sSL "https://raw.githubusercontent.com/kubernetes/release/${RELEASE_VERSION}/cmd/krel/templates/latest/kubeadm/10-kubeadm.conf" | sed "s:/usr/bin:${DOWNLOAD_DIR}:g" | sudo tee /etc/systemd/system/kubelet.service.d/10-kubeadm.con
+
+
+systemctl enable --now kubelet
+
+4) Using cri-dockerd on new Kubernetes cluster
+https://computingforgeeks.com/install-mirantis-cri-dockerd-as-docker-engine-shim-for-kubernetes/?expand_article=1
+
+
+sudo kubeadm config images pull --cri-socket /run/cri-dockerd.sock
+
+sudo kubeadm init --pod-network-cidr=192.168.0.0/16 --cri-socket /run/cri-dockerd.sock
+
+
+
+
+
+
+
+
+example
+
+kubeadm init --pod-network-cidr=192.168.0.0/16 --apiserver-advertise-address=192.168.150.16 --cri-socket /run/cri-dockerd.sock
+-----------------------------------------------------------------------------------------------------------------------
+Your Kubernetes control-plane has initialized successfully!
+
+To start using your cluster, you need to run the following as a regular user:
+
+  mkdir -p $HOME/.kube
+  sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+  sudo chown $(id -u):$(id -g) $HOME/.kube/config
+
+Alternatively, if you are the root user, you can run:
+
+  export KUBECONFIG=/etc/kubernetes/admin.conf
+
+You should now deploy a pod network to the cluster.
+Run "kubectl apply -f [podnetwork].yaml" with one of the options listed at:
+  https://kubernetes.io/docs/concepts/cluster-administration/addons/
+
+Then you can join any number of worker nodes by running the following on each as root:
+
+kubeadm join 192.168.150.16:6443 --token yxuxs5.6epidzbazp7gkn96 \
+        --discovery-token-ca-cert-hash sha256:ae39b08185474e0404b4886eea62606a647f6959d15a4be92e18668bf8ac67f6
+
+ 
+		
+---------------------------------------------------------------------------------------------------------------------------------------
+mkdir -p $HOME/.kube
+sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+sudo chown $(id -u):$(id -g) $HOME/.kube/config
+export KUBECONFIG=/etc/kubernetes/admin.conf
+
+kubectl get nodes -o wide
+kubectl get pods -A
+
+network config addons
+https://kubernetes.io/docs/concepts/cluster-administration/networking/#how-to-implement-the-kubernetes-networking-model
+/etc/cni/net.d/
+
+kubectl apply -f https://docs.projectcalico.org/v3.11/manifests/calico.yaml
+to delete the network pod which we used
+kubectl -n kube-system delete -f https://github.com/weaveworks/weave/releases/download/v2.8.1/weave-daemonset-k8s.yaml
+---------------------------------------------------------------------------------------------------------------------------------------------
+to create a new token on master 
+kubeadm token list
+kubeadm token create
+kubeadm token create --print-join-command
+
+----------------------------------------------------------------------------------------------------------
+kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.26.3/manifests/tigera-operator.yaml
+kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.26.3/manifests/custom-resources.yaml
+-----------------------------------------------------------------------------------------
+vi /var/log/messages
+to see logs when adding nodes
+--------------------------------------------------------------------------------------------------------
+
+https://docs.tigera.io/calico/latest/getting-started/kubernetes/self-managed-onprem/onpremises
+
+cd /var/lib/calico
+
+curl https://raw.githubusercontent.com/projectcalico/calico/v3.26.3/manifests/calico.yaml -O
+kubectl apply -f calico.yaml
+
+
+https://docs.tigera.io/calico/latest/getting-started/kubernetes/flannel/install-for-flannel#installing-with-the-kubernetes-api-datastore-recommended
+
+
+curl https://raw.githubusercontent.com/projectcalico/calico/v3.26.3/manifests/canal.yaml -O
+kubectl apply -f canal.yaml
+cd /home/emaadmin
+
+
+
+
+kubectl describe pods  -n kube-system calico-node-c2gc7 
+ kubectl logs -n kube-system calico-node-c2gc7 
+ kubectl logs -n kube-system calico-node-7dqkp
+
+
+-------------------------------------------------------------------------------------------------------------------------
+name: CALICO_IPV4POOL_CIDR
+value: "172.30.0.0/16"
+name: IP_AUTODETECTION_METHOD
+value: "interface=eth.*"
+
+-------------------------------------------------------------------------------------------------------
+ to give node role name
+ kubectl label nodes ema-kubernetesvm02 kubernetes.io/role=worker
+ kubectl label --overwrite nodes <your_node> kubernetes.io/role=<your_new_label>
+ 
+ to remove node role name
+ kubectl label node ema-kubernetesvm02 node-role.kubernetes.io/<role name>-
+ 

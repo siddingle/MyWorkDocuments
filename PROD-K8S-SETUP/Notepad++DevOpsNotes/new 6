@@ -1,0 +1,86 @@
+FROM httpd:2.4
+
+#ARG BUILD_ID            xx
+ENV SERVICE_NAME        e-migrate-DEV.zip
+#ENV VERSION             0.0.1-SNAPSHOT
+#ENV SERVICE_PORT        8081
+#ARG ENVIRONMENT         QA
+ENV WORK_DIR            /var/www/html
+
+#RUN echo "BUILD_ID":${BUILD_ID}
+RUN echo "SERVICE_NAME":${SERVICE_NAME}
+#RUN echo "VERSION":${VERSION}
+#RUN echo "SERVICE_PORT":${SERVICE_PORT}
+#RUN echo "ENVIRONMENT":${ENVIRONMENT}
+RUN echo "WORK_DIR":${WORK_DIR}
+
+# set the work dir in container
+WORKDIR ${WORK_DIR}
+
+# to verify the empty directories are created
+RUN mkdir -p ${WORK_DIR}
+RUN mkdir -p ${WORK_DIR}/newbuild
+RUN mkdir -p ${WORK_DIR}/newbuild/html
+
+
+RUN apt-get update && apt-get install -y unzip
+COPY ${SERVICE_NAME} ${WORK_DIR}/newbuild
+RUN unzip ${WORK_DIR}/newbuild/${SERVICE_NAME} -d ${WORK_DIR}/newbuild
+
+RUN mv  ${WORK_DIR}/newbuild/e-migrate/* /usr/local/apache2/htdocs
+
+https://download.docker.com/linux/centos/docker-ce.repo
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ curl -u siddharth.ingle:11fb5fd3766920ced86f67c0df83ef2f1c https://apps.trigyn.com/jenkins2/job/EMigrate-UI-withoutCaptcha/9/artifact/e-migrate-withoutCaptcha-DOCKER-DEV.zip --output e-migrate-withoutCaptcha-DOCKER-DEV.zip
+ 
+ 
+ 
+ docker build -t emigrate-ui .
+  docker run -dit --name emigrate-ui -p 18080:80 emigrate-ui
+
+
+
+
+
+
+
+
+
+Access token env
+
+Admin 223
+UI 
+Auth 37
+Docs 10
+EC 561
+FE 715
+Gateway 43
+Grievance 167
+Insurance 50
+Notif 60
+Payment 188
+RA 767
+Report 475 
+Security 271
+Workflow 60
+
+
+

@@ -1,0 +1,30 @@
+"du -sh ./emigrateUAT
+du -sb ./emigrateUAT
+find ./emigrateUAT -type f -exec md5sum {} \; | md5sum
+
+#value for QA
+22a502e893efcb96a46615bb904179b4
+875da7ae8d70abfe7100ea072a312db5
+
+find ./emigrate -type f -exec md5sum {} \; | md5sum
+
+
+"find ./*.jar -exec md5sum {} \;
+du -sh *.jar
+du -sb *.jar"
+
+#value for UAT
+e828207fefaea0366ed850e11067867f  -
+
+
+
+
+/home/migration/emigrate/server/packages/backup/RC-10-FEB-2024/
+
+
+
+
+
+
+
+

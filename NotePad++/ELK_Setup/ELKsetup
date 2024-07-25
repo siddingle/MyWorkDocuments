@@ -1,0 +1,1332 @@
+ELK
+to check UTC time
+date -d @creation date of ELK indices
+date -u
+IMp 
+cd /usr/share/elasticsearch/bin/
+ ./elasticsearch-setup-passwords interactive
+ 
+curl -u elastic:Meeting#4321 -X GET "http://localhost:9200/"
+
+curl -u elastic:Meeting#4321 -X GET "http://172.16.100.20:9200/_cat/indices?v"
+curl -X GET "localhost:9200/_cat/indices?v"
+
+
+to run log using logstach.conf
+ /usr/share/logstash/bin/logstash -f /etc/logstash/conf.d/logstach.conf
+ 
+lsof -i -P -n | grep LISTEN
+cd /usr/share/elasticsearch/bin/ 
+./elasticsearch-setup-passwords interactive
+ 
+Changed password for user [apm_system]
+Changed password for user [kibana_system]
+Changed password for user [kibana]
+Changed password for user [logstash_system]
+Changed password for user [beats_system]
+Changed password for user [remote_monitoring_user]
+Changed password for user [elastic]
+
+elastic
+Meeting#4321
+
+
+elasticsearch
+ netstat -anp | grep LISTEN | grep tcp
+
+
+https://forum.uipath.com/t/enable-basic-authentication-on-elasticsearch-and-kibana/410484
+wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-8.11.3-x86_64.rpm
+sudo rpm --install elasticsearch-8.11.3-x86_64.rpm
+
+
+Creating elasticsearch group... OK
+Creating elasticsearch user... OK
+--------------------------- Security autoconfiguration information ------------------------------
+
+Skipping auto-configuration because security features appear to be already configured.
+
+-------------------------------------------------------------------------------------------------
+### NOT starting on installation, please execute the following statements to configure elasticsearch service to start automatically using systemd
+ sudo systemctl daemon-reload
+ sudo systemctl enable elasticsearch.service
+### You can start elasticsearch service by executing
+ sudo systemctl start elasticsearch.service
+/usr/lib/tmpfiles.d/elasticsearch.conf:1: Line references path below legacy directory /var/run/, updating /var/run/elasticsearch → /run/elasticsearch; please update the tmpfiles.d/ drop-in file accordingly.
+
+
+
+
+Kibana
+
+wget https://artifacts.elastic.co/downloads/kibana/kibana-8.11.3-x86_64.rpm
+sudo rpm --install kibana-8.11.3-x86_64.rpm
+
+Creating kibana group... OK
+Creating kibana user... OK
+/usr/lib/tmpfiles.d/elasticsearch.conf:1: Line references path below legacy directory /var/run/, updating /var/run/elasticsearch → /run/elasticsearch; please update the tmpfiles.d/ drop-in file accordingly.
+
+
+
+logstash
+
+
+sudo rpm --import https://artifacts.elastic.co/GPG-KEY-elasticsearch
+
+[logstash-8.x]
+name=Elastic repository for 8.x packages
+baseurl=https://artifacts.elastic.co/packages/8.x/yum
+gpgcheck=1
+gpgkey=https://artifacts.elastic.co/GPG-KEY-elasticsearch
+enabled=1
+autorefresh=1
+type=rpm-md
+
+sudo yum install logstash
+sudo systemctl start logstash.service
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+mount directory
+/emigrate/logConfig
+
+
+
+java -Dlogback.configurationFile=/emigrate/logConfig/adminServiceLogConfig.xml -jar AdministrationService-0.0.1-SNAPSHOT.jar
+
+-Dlogback.configurationFile=/emigrate/logConfig/adminServiceLogConfig.xml
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+id: bad95230-a026-11ee-985f-795e86c5dac5
+revision: 2
+outputs:
+  default:
+    type: elasticsearch
+    hosts:
+      - 'http://localhost:9200'
+    username: elastic
+    password: Meeting#4321
+output_permissions:
+  default:
+    _elastic_agent_monitoring:
+      indices:
+        - names:
+            - logs-elastic_agent.apm_server-default
+          privileges:
+            - auto_configure
+            - create_doc
+        - names:
+            - metrics-elastic_agent.apm_server-default
+          privileges:
+            - auto_configure
+            - create_doc
+        - names:
+            - logs-elastic_agent.auditbeat-default
+          privileges:
+            - auto_configure
+            - create_doc
+        - names:
+            - metrics-elastic_agent.auditbeat-default
+          privileges:
+            - auto_configure
+            - create_doc
+        - names:
+            - logs-elastic_agent.cloud_defend-default
+          privileges:
+            - auto_configure
+            - create_doc
+        - names:
+            - logs-elastic_agent.cloudbeat-default
+          privileges:
+            - auto_configure
+            - create_doc
+        - names:
+            - metrics-elastic_agent.cloudbeat-default
+          privileges:
+            - auto_configure
+            - create_doc
+        - names:
+            - logs-elastic_agent-default
+          privileges:
+            - auto_configure
+            - create_doc
+        - names:
+            - metrics-elastic_agent.elastic_agent-default
+          privileges:
+            - auto_configure
+            - create_doc
+        - names:
+            - metrics-elastic_agent.endpoint_security-default
+          privileges:
+            - auto_configure
+            - create_doc
+        - names:
+            - logs-elastic_agent.endpoint_security-default
+          privileges:
+            - auto_configure
+            - create_doc
+        - names:
+            - logs-elastic_agent.filebeat_input-default
+          privileges:
+            - auto_configure
+            - create_doc
+        - names:
+            - metrics-elastic_agent.filebeat_input-default
+          privileges:
+            - auto_configure
+            - create_doc
+        - names:
+            - logs-elastic_agent.filebeat-default
+          privileges:
+            - auto_configure
+            - create_doc
+        - names:
+            - metrics-elastic_agent.filebeat-default
+          privileges:
+            - auto_configure
+            - create_doc
+        - names:
+            - logs-elastic_agent.fleet_server-default
+          privileges:
+            - auto_configure
+            - create_doc
+        - names:
+            - metrics-elastic_agent.fleet_server-default
+          privileges:
+            - auto_configure
+            - create_doc
+        - names:
+            - logs-elastic_agent.heartbeat-default
+          privileges:
+            - auto_configure
+            - create_doc
+        - names:
+            - metrics-elastic_agent.heartbeat-default
+          privileges:
+            - auto_configure
+            - create_doc
+        - names:
+            - logs-elastic_agent.metricbeat-default
+          privileges:
+            - auto_configure
+            - create_doc
+        - names:
+            - metrics-elastic_agent.metricbeat-default
+          privileges:
+            - auto_configure
+            - create_doc
+        - names:
+            - logs-elastic_agent.osquerybeat-default
+          privileges:
+            - auto_configure
+            - create_doc
+        - names:
+            - metrics-elastic_agent.osquerybeat-default
+          privileges:
+            - auto_configure
+            - create_doc
+        - names:
+            - logs-elastic_agent.packetbeat-default
+          privileges:
+            - auto_configure
+            - create_doc
+        - names:
+            - metrics-elastic_agent.packetbeat-default
+          privileges:
+            - auto_configure
+            - create_doc
+        - names:
+            - logs-elastic_agent.pf_elastic_collector-default
+          privileges:
+            - auto_configure
+            - create_doc
+        - names:
+            - logs-elastic_agent.pf_elastic_symbolizer-default
+          privileges:
+            - auto_configure
+            - create_doc
+        - names:
+            - logs-elastic_agent.pf_host_agent-default
+          privileges:
+            - auto_configure
+            - create_doc
+    _elastic_agent_checks:
+      cluster:
+        - monitor
+    6f9e7cd9-02f8-4ae2-8609-fa2dbd659884:
+      indices:
+        - names:
+            - logs-system.auth-default
+          privileges:
+            - auto_configure
+            - create_doc
+        - names:
+            - logs-system.syslog-default
+          privileges:
+            - auto_configure
+            - create_doc
+        - names:
+            - logs-system.application-default
+          privileges:
+            - auto_configure
+            - create_doc
+        - names:
+            - logs-system.security-default
+          privileges:
+            - auto_configure
+            - create_doc
+        - names:
+            - logs-system.system-default
+          privileges:
+            - auto_configure
+            - create_doc
+        - names:
+            - metrics-system.cpu-default
+          privileges:
+            - auto_configure
+            - create_doc
+        - names:
+            - metrics-system.diskio-default
+          privileges:
+            - auto_configure
+            - create_doc
+        - names:
+            - metrics-system.filesystem-default
+          privileges:
+            - auto_configure
+            - create_doc
+        - names:
+            - metrics-system.fsstat-default
+          privileges:
+            - auto_configure
+            - create_doc
+        - names:
+            - metrics-system.load-default
+          privileges:
+            - auto_configure
+            - create_doc
+        - names:
+            - metrics-system.memory-default
+          privileges:
+            - auto_configure
+            - create_doc
+        - names:
+            - metrics-system.network-default
+          privileges:
+            - auto_configure
+            - create_doc
+        - names:
+            - metrics-system.process-default
+          privileges:
+            - auto_configure
+            - create_doc
+        - names:
+            - metrics-system.process.summary-default
+          privileges:
+            - auto_configure
+            - create_doc
+        - names:
+            - metrics-system.socket_summary-default
+          privileges:
+            - auto_configure
+            - create_doc
+        - names:
+            - metrics-system.uptime-default
+          privileges:
+            - auto_configure
+            - create_doc
+    998b7a40-710e-445e-bd33-929f0723abaa:
+      indices:
+        - names:
+            - logs-logstash.log-default
+          privileges:
+            - auto_configure
+            - create_doc
+        - names:
+            - logs-logstash.slowlog-default
+          privileges:
+            - auto_configure
+            - create_doc
+        - names:
+            - metrics-logstash.stack_monitoring.node-default
+          privileges:
+            - auto_configure
+            - create_doc
+        - names:
+            - metrics-logstash.stack_monitoring.node_stats-default
+          privileges:
+            - auto_configure
+            - create_doc
+agent:
+  download:
+    sourceURI: 'https://artifacts.elastic.co/downloads/'
+  monitoring:
+    enabled: true
+    use_output: default
+    namespace: default
+    logs: true
+    metrics: true
+  features: {}
+  protection:
+    enabled: false
+    uninstall_token_hash: sf/R73UsS+9PVdCpVg9c616gtlpU1CwbR9Dcus1VnxU=
+    signing_key: >-
+      MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEUF3BSyeIZg6/yfqPiKwWrJ2BNQuBH7QMjGL3qjD3v3bxdBRjPvFSVNnZCcOgBbmdosklq2cO1q/O9oX5OO0iwg==
+inputs:
+  - id: logfile-system-6f9e7cd9-02f8-4ae2-8609-fa2dbd659884
+    name: system-1
+    revision: 1
+    type: logfile
+    use_output: default
+    meta:
+      package:
+        name: system
+        version: 1.51.0
+    data_stream:
+      namespace: default
+    package_policy_id: 6f9e7cd9-02f8-4ae2-8609-fa2dbd659884
+    streams:
+      - id: logfile-system.auth-6f9e7cd9-02f8-4ae2-8609-fa2dbd659884
+        data_stream:
+          dataset: system.auth
+          type: logs
+        ignore_older: 72h
+        paths:
+          - /var/log/auth.log*
+          - /var/log/secure*
+        exclude_files:
+          - \.gz$
+        multiline:
+          pattern: ^\s
+          match: after
+        tags:
+          - system-auth
+        processors:
+          - add_locale: null
+          - rename:
+              fields:
+                - from: message
+                  to: event.original
+              ignore_missing: true
+              fail_on_error: false
+          - syslog:
+              field: event.original
+              ignore_missing: true
+              ignore_failure: true
+      - id: logfile-system.syslog-6f9e7cd9-02f8-4ae2-8609-fa2dbd659884
+        data_stream:
+          dataset: system.syslog
+          type: logs
+        paths:
+          - /var/log/messages*
+          - /var/log/syslog*
+          - /var/log/system*
+        exclude_files:
+          - \.gz$
+        multiline:
+          pattern: ^\s
+          match: after
+        processors:
+          - add_locale: null
+        tags: null
+        ignore_older: 72h
+  - id: winlog-system-6f9e7cd9-02f8-4ae2-8609-fa2dbd659884
+    name: system-1
+    revision: 1
+    type: winlog
+    use_output: default
+    meta:
+      package:
+        name: system
+        version: 1.51.0
+    data_stream:
+      namespace: default
+    package_policy_id: 6f9e7cd9-02f8-4ae2-8609-fa2dbd659884
+    streams:
+      - id: winlog-system.application-6f9e7cd9-02f8-4ae2-8609-fa2dbd659884
+        name: Application
+        data_stream:
+          dataset: system.application
+          type: logs
+        condition: '${host.platform} == ''windows'''
+        ignore_older: 72h
+      - id: winlog-system.security-6f9e7cd9-02f8-4ae2-8609-fa2dbd659884
+        name: Security
+        data_stream:
+          dataset: system.security
+          type: logs
+        condition: '${host.platform} == ''windows'''
+        ignore_older: 72h
+      - id: winlog-system.system-6f9e7cd9-02f8-4ae2-8609-fa2dbd659884
+        name: System
+        data_stream:
+          dataset: system.system
+          type: logs
+        condition: '${host.platform} == ''windows'''
+        ignore_older: 72h
+  - id: system/metrics-system-6f9e7cd9-02f8-4ae2-8609-fa2dbd659884
+    name: system-1
+    revision: 1
+    type: system/metrics
+    use_output: default
+    meta:
+      package:
+        name: system
+        version: 1.51.0
+    data_stream:
+      namespace: default
+    package_policy_id: 6f9e7cd9-02f8-4ae2-8609-fa2dbd659884
+    streams:
+      - id: system/metrics-system.cpu-6f9e7cd9-02f8-4ae2-8609-fa2dbd659884
+        data_stream:
+          dataset: system.cpu
+          type: metrics
+        metricsets:
+          - cpu
+        cpu.metrics:
+          - percentages
+          - normalized_percentages
+        period: 10s
+      - id: system/metrics-system.diskio-6f9e7cd9-02f8-4ae2-8609-fa2dbd659884
+        data_stream:
+          dataset: system.diskio
+          type: metrics
+        metricsets:
+          - diskio
+        diskio.include_devices: null
+        period: 10s
+      - id: system/metrics-system.filesystem-6f9e7cd9-02f8-4ae2-8609-fa2dbd659884
+        data_stream:
+          dataset: system.filesystem
+          type: metrics
+        metricsets:
+          - filesystem
+        period: 1m
+        processors:
+          - drop_event.when.regexp:
+              system.filesystem.mount_point: ^/(sys|cgroup|proc|dev|etc|host|lib|snap)($|/)
+      - id: system/metrics-system.fsstat-6f9e7cd9-02f8-4ae2-8609-fa2dbd659884
+        data_stream:
+          dataset: system.fsstat
+          type: metrics
+        metricsets:
+          - fsstat
+        period: 1m
+        processors:
+          - drop_event.when.regexp:
+              system.fsstat.mount_point: ^/(sys|cgroup|proc|dev|etc|host|lib|snap)($|/)
+      - id: system/metrics-system.load-6f9e7cd9-02f8-4ae2-8609-fa2dbd659884
+        data_stream:
+          dataset: system.load
+          type: metrics
+        metricsets:
+          - load
+        condition: '${host.platform} != ''windows'''
+        period: 10s
+      - id: system/metrics-system.memory-6f9e7cd9-02f8-4ae2-8609-fa2dbd659884
+        data_stream:
+          dataset: system.memory
+          type: metrics
+        metricsets:
+          - memory
+        period: 10s
+      - id: system/metrics-system.network-6f9e7cd9-02f8-4ae2-8609-fa2dbd659884
+        data_stream:
+          dataset: system.network
+          type: metrics
+        metricsets:
+          - network
+        period: 10s
+        network.interfaces: null
+      - id: system/metrics-system.process-6f9e7cd9-02f8-4ae2-8609-fa2dbd659884
+        data_stream:
+          dataset: system.process
+          type: metrics
+        metricsets:
+          - process
+        period: 10s
+        process.include_top_n.by_cpu: 5
+        process.include_top_n.by_memory: 5
+        process.cmdline.cache.enabled: true
+        process.cgroups.enabled: false
+        process.include_cpu_ticks: false
+        processes:
+          - .*
+      - id: >-
+          system/metrics-system.process.summary-6f9e7cd9-02f8-4ae2-8609-fa2dbd659884
+        data_stream:
+          dataset: system.process.summary
+          type: metrics
+        metricsets:
+          - process_summary
+        period: 10s
+      - id: >-
+          system/metrics-system.socket_summary-6f9e7cd9-02f8-4ae2-8609-fa2dbd659884
+        data_stream:
+          dataset: system.socket_summary
+          type: metrics
+        metricsets:
+          - socket_summary
+        period: 10s
+      - id: system/metrics-system.uptime-6f9e7cd9-02f8-4ae2-8609-fa2dbd659884
+        data_stream:
+          dataset: system.uptime
+          type: metrics
+        metricsets:
+          - uptime
+        period: 10s
+  - id: logfile-logstash-998b7a40-710e-445e-bd33-929f0723abaa
+    name: logstash-1
+    revision: 1
+    type: logfile
+    use_output: default
+    meta:
+      package:
+        name: logstash
+        version: 2.4.1
+    data_stream:
+      namespace: default
+    package_policy_id: 998b7a40-710e-445e-bd33-929f0723abaa
+    streams:
+      - id: logfile-logstash.log-998b7a40-710e-445e-bd33-929f0723abaa
+        data_stream:
+          dataset: logstash.log
+          type: logs
+        paths:
+          - /var/log/logstash/logstash-json*.log
+        exclude_files:
+          - .gz$
+        multiline:
+          pattern: '^((\[[0-9]{4}-[0-9]{2}-[0-9]{2}[^\]]+\])|({.+}))'
+          negate: true
+          match: after
+        processors:
+          - add_locale.when.not.regexp.message: '^{'
+          - add_fields:
+              target: ''
+              fields:
+                ecs.version: 1.10.0
+      - id: logfile-logstash.slowlog-998b7a40-710e-445e-bd33-929f0723abaa
+        data_stream:
+          dataset: logstash.slowlog
+          type: logs
+        paths:
+          - /var/log/logstash/logstash-slowlog-json*.log
+        exclude_files:
+          - .gz$
+        processors:
+          - add_locale.when.not.regexp.message: '^{'
+          - add_fields:
+              target: ''
+              fields:
+                ecs.version: 1.10.0
+  - id: logstash/metrics-logstash-998b7a40-710e-445e-bd33-929f0723abaa
+    name: logstash-1
+    revision: 1
+    type: logstash/metrics
+    use_output: default
+    meta:
+      package:
+        name: logstash
+        version: 2.4.1
+    data_stream:
+      namespace: default
+    package_policy_id: 998b7a40-710e-445e-bd33-929f0723abaa
+    streams:
+      - id: >-
+          logstash/metrics-logstash.stack_monitoring.node-998b7a40-710e-445e-bd33-929f0723abaa
+        data_stream:
+          dataset: logstash.stack_monitoring.node
+          type: metrics
+        metricsets:
+          - node
+        hosts:
+          - 'http://localhost:9600'
+        period: 10s
+        ssl: null
+      - id: >-
+          logstash/metrics-logstash.stack_monitoring.node_stats-998b7a40-710e-445e-bd33-929f0723abaa
+        data_stream:
+          dataset: logstash.stack_monitoring.node_stats
+          type: metrics
+        metricsets:
+          - node_stats
+        hosts:
+          - 'http://localhost:9600'
+        period: 10s
+        ssl: null
+signed:
+  data: >-
+    eyJpZCI6ImJhZDk1MjMwLWEwMjYtMTFlZS05ODVmLTc5NWU4NmM1ZGFjNSIsImFnZW50Ijp7ImZlYXR1cmVzIjp7fSwicHJvdGVjdGlvbiI6eyJlbmFibGVkIjpmYWxzZSwidW5pbnN0YWxsX3Rva2VuX2hhc2giOiJzZi9SNzNVc1MrOVBWZENwVmc5YzYxNmd0bHBVMUN3YlI5RGN1czFWbnhVPSIsInNpZ25pbmdfa2V5IjoiTUZrd0V3WUhLb1pJemowQ0FRWUlLb1pJemowREFRY0RRZ0FFVUYzQlN5ZUlaZzYveWZxUGlLd1dySjJCTlF1Qkg3UU1qR0wzcWpEM3YzYnhkQlJqUHZGU1ZOblpDY09nQmJtZG9za2xxMmNPMXEvTzlvWDVPTzBpd2c9PSJ9fSwiaW5wdXRzIjpbeyJpZCI6ImxvZ2ZpbGUtc3lzdGVtLTZmOWU3Y2Q5LTAyZjgtNGFlMi04NjA5LWZhMmRiZDY1OTg4NCIsIm5hbWUiOiJzeXN0ZW0tMSIsInJldmlzaW9uIjoxLCJ0eXBlIjoibG9nZmlsZSJ9LHsiaWQiOiJ3aW5sb2ctc3lzdGVtLTZmOWU3Y2Q5LTAyZjgtNGFlMi04NjA5LWZhMmRiZDY1OTg4NCIsIm5hbWUiOiJzeXN0ZW0tMSIsInJldmlzaW9uIjoxLCJ0eXBlIjoid2lubG9nIn0seyJpZCI6InN5c3RlbS9tZXRyaWNzLXN5c3RlbS02ZjllN2NkOS0wMmY4LTRhZTItODYwOS1mYTJkYmQ2NTk4ODQiLCJuYW1lIjoic3lzdGVtLTEiLCJyZXZpc2lvbiI6MSwidHlwZSI6InN5c3RlbS9tZXRyaWNzIn0seyJpZCI6ImxvZ2ZpbGUtbG9nc3Rhc2gtOTk4YjdhNDAtNzEwZS00NDVlLWJkMzMtOTI5ZjA3MjNhYmFhIiwibmFtZSI6ImxvZ3N0YXNoLTEiLCJyZXZpc2lvbiI6MSwidHlwZSI6ImxvZ2ZpbGUifSx7ImlkIjoibG9nc3Rhc2gvbWV0cmljcy1sb2dzdGFzaC05OThiN2E0MC03MTBlLTQ0NWUtYmQzMy05MjlmMDcyM2FiYWEiLCJuYW1lIjoibG9nc3Rhc2gtMSIsInJldmlzaW9uIjoxLCJ0eXBlIjoibG9nc3Rhc2gvbWV0cmljcyJ9XX0=
+  signature: >-
+    MEQCIFNBX9uj02O5oGYlpctFeeMcFv/gYbGnmE127iThgcIWAiAKKTS7eXkmLDj9iHzxwawkAIGDExE7kdWJlge6j4YZ+A==
+secret_references: []
+
+
+
+
+
+
+
+
+
+
+curl -L -O https://artifacts.elastic.co/downloads/beats/elastic-agent/elastic-agent-8.11.3-linux-x86_64.tar.gz
+tar xzvf elastic-agent-8.11.3-linux-x86_64.tar.gz
+cd elastic-agent-8.11.3-linux-x86_64
+sudo ./elastic-agent install
+
+
+
+
+
+  Plugin: <LogStash::Inputs::Tcp mode=>"server", codec=><LogStash::Codecs::JSONLines id=>"json_lines_1e53d5c9-7641-4259-bb4a-e6be777708ab", enable_metric=>true, charset=>"UTF-8", delimiter=>"\n">, id=>"socket-server", type=>"socket-server", port=>9601, enable_metric=>true, host=>"0.0.0.0", proxy_protocol=>false, ssl_enable=>false, ssl_enabled=>false, ssl_client_authentication=>"required", ssl_verify=>true, ssl_verification_mode=>"full", ssl_key_passphrase=><password>, tcp_keep_alive=>false, dns_reverse_lookup_enabled=>true>
+  Error: Address already in use
+  Exception: Java::JavaNet::BindException
+  Stack: sun.nio.ch.Net.bind0(Native Method)
+sun.nio.ch.Net.bind(sun/nio/ch/Net.java:555)
+
+
+
+
+[ERROR] 2023-12-22 08:00:46.694 [[main]<tcp] javapipeline - A plugin had an unrecoverable error. Will restart this plugin.
+  Pipeline_id:main
+  Plugin: <LogStash::Inputs::Tcp mode=>"server", codec=><LogStash::Codecs::JSONLines id=>"json_lines_4968e3fa-5f08-4ae2-81d1-70b8a1012649", enable_metric=>true, charset=>"UTF-8", delimiter=>"\n">, id=>"socket-server", type=>"socket-server", port=>9601, enable_metric=>true, host=>"0.0.0.0", proxy_protocol=>false, ssl_enable=>false, ssl_enabled=>false, ssl_client_authentication=>"required", ssl_verify=>true, ssl_verification_mode=>"full", ssl_key_passphrase=><password>, tcp_keep_alive=>false, dns_reverse_lookup_enabled=>true>
+  Error: Address already in use
+  Exception: Java::JavaNet::BindException
+  Stack: sun.nio.ch.Net.bind0(Native Method)
+
+
+
+tcp {
+    port => 9601
+    mode => "server"
+    id => "socket-server"
+    type => "socket-server"
+ }
+ 
+ 
+ 
+ 
+ 
+ 
+ output {
+  stdout { codec => rubydebug }
+        file {
+        #message_format => "%{foo},%{bar},%{fii},%{bor},%{bing}"
+        #codec => { line { format => "custom format: %{message}"}}
+        path => "/var/log/logstash/logstash-json*.log"
+    }
+
+
+
+
+
+[root@master-node-new fluend]# kubectl create -f fluentd-rbac.yaml
+clusterrole.rbac.authorization.k8s.io/fluentd created
+clusterrolebinding.rbac.authorization.k8s.io/fluentd created
+Error from server (AlreadyExists): error when creating "fluentd-rbac.yaml": serviceaccounts "fluentd" already exists
+
+
+
+[root@master-node-new fluend]# kubectl create -f fluentd-daemonset1.yaml
+daemonset.apps/fluentd created
+
+
+
+1 change made in /etc/elasticsearch/yml file
+change from localhost 0.0.0.0
+
+added in jvm.options /etc/elasticsearch/
+-Djava.net.preferIPv4Stack=true
+-Djava.awt.headless=true
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+input {
+
+tcp {
+port => 10514
+codec => "json"
+type => "rsyslog"
+}
+}
+
+Here is the output:
+output {
+elasticsearch {
+hosts => ["localhost:9200"]
+sniffing => true
+manage_template => false
+index => "%{[@metadata][beat]}-%{+YYYY.MM.dd}"
+document_type => "%{[@metadata][type]}"
+}
+if [type] == "rsyslog" {
+elasticsearch {
+hosts => [ "localhost:9200" ]
+}
+}
+}
+
+
+
+
+
+
+Once logstash elasticsearch kibana giving error with systemd and not creating log as well
+sudo mkdir /var/log/kibana
+sudo mkdir /var/log/logstash
+sudo mkdir /var/log/elasticsearch
+
+sudo chown -R kibana:kibana /var/log/kibana
+sudo chmod -R 755 /var/log/kibana
+
+sudo chown -R elasticsearch:elasticsearch /var/log/elasticsearch
+sudo chmod -R 755 /var/log/elasticsearch
+
+sudo chown -R logstash:logstash /var/log/logstash
+sudo chmod -R 755 /var/log/logstash
+
+logstash was stopping with an error
+
+Logstash stopped processing because of an error: (LoadError) Could not load FFI Provider: (NotImplementedError) FFI not available: null
+
+solution
+given 777 permission to /tmp
+
+
+
+
+Upgrading ELK 
+downloaded RPM packages inside for all /workspace/ELK-8.12.2/
+stop all the running services of ELK 
+systemctl stop elasticsearch
+systemctl stop logstash
+systemctl stop kibana
+
+rpm -Uvh elasticsearch-8.12.2-x86_64.rpm
+rpm -Uvh logstash-8.12.2-x86_64.rpm
+rpm -Uvh kibana-8.12.2-x86_64.rpm
+
+elasticsearch version can be verified running below command
+curl -u elastic:Meeting#4321 -X GET "http://localhost:9200/"
+
+kibana version can be verfied on browser kibana dashboard
+
+logstash conf with two ports 
+/etc/logstash/conf.d/logstach.conf
+
+input {
+  tcp {
+    port => 5045
+    codec => json
+    type => "userActivity"
+  }
+  tcp {
+    port => 5044
+    codec => json
+    type => "generic"
+  }
+
+}
+
+ output {
+   if [type] == "userActivity" {
+  elasticsearch {
+    hosts => ["localhost:9200"]
+    user => "elastic"
+    password => "Meeting#4321"
+    #index => "socket-server-%{+YYYY.MM.dd}"
+    index => "user-activity-%{+YYYY.MM.dd}"
+  }
+}
+  if [type] == "generic" {
+  elasticsearch {
+    hosts => ["localhost:9200"]
+    user => "elastic"
+    password => "Meeting#4321"
+    index => "socket-server-%{+YYYY.MM.dd}"
+
+  }
+}
+}
+
+
+
+NodeJS version upgrade in kibana
+Run the below shell file
+
+patch is required 
+yum install patch
+
+
+#!/bin/bash
+NODE_VERSION=v18.19.1
+cd /tmp/
+wget --no-clobber https://nodejs.org/download/release/${NODE_VERSION}/node-${NODE_VERSION}-linux-x64.tar.xz
+sudo systemctl stop kibana
+tar -xvf node-${NODE_VERSION}-linux-x64.tar.xz --strip-components=1 \
+    --overwrite \
+    --directory /usr/share/kibana/node/
+
+cat <<EOF | tee /tmp/node_version_validator.js.patch
+--- /usr/share/kibana/src/setup_node_env/node_version_validator.js      2023-08-31 11:23:41.000000000 +0000
++++ /tmp/node_version_validator.js      2023-09-06 23:28:58.632477706 +0000
+@@ -22,6 +22,6 @@
+   var errorMessage = 'Kibana does not support the current Node.js version ' + currentVersion + '. Please use Node.js ' + requiredVersion + '.';
+
+   // Actions to apply when validation fails: error report + exit.
+-  console.error(errorMessage);
+-  process.exit(1);
+-}
+\ No newline at end of file
++  //console.error(errorMessage);
++  //process.exit(1);
++}
+EOF
+
+cd /usr/share/kibana/src/setup_node_env
+sudo patch < /tmp/node_version_validator.js.patch
+sudo systemctl restart kibana
+
+
+
+
+
+
+
+
+
+
+ELK LifeCycle Policy
+
+PUT _ilm/policy/emigrate_logs_policy
+{
+  "policy": {
+    "phases": {
+      "hot": {
+        "min_age": "0ms",
+        "actions": {
+          "set_priority": {
+            "priority": 100
+          },
+          "rollover": {
+            "max_age": "10d"
+          }
+        }
+      },
+      "delete": {
+        "min_age": "10d",
+        "actions": {
+          "delete": {}
+        }
+      }
+    }
+  }
+}
+
+
+ELK LifeCycle policy with warm phase
+
+PUT _ilm/policy/emigrate_logs_policy
+{
+  "policy": {
+    "phases": {
+      "hot": {
+        "min_age": "0ms",
+        "actions": {
+          "set_priority": {
+            "priority": 100
+          }
+        }
+      },
+      "warm": {
+        "min_age": "8d",
+        "actions": {
+          "set_priority": {
+            "priority": 50
+          }
+        }
+      },
+      "delete": {
+        "min_age": "10d",
+        "actions": {
+          "delete": {
+            "delete_searchable_snapshot": true
+          }
+        }
+      }
+    }
+  }
+}
+
+
+
+
+
+Intex template created 
+emigrate_logs_policy
+
+
+PUT _index_template/emigrate_logs_policy
+{
+  "template": {
+    "settings": {
+      "index": {
+        "lifecycle": {
+          "name": "emigrate_logs_policy",
+          "rollover_alias": "EmigrateLogs"
+        },
+        "number_of_shards": "1",
+        "auto_expand_replicas": "0-1",
+        "number_of_replicas": "0"
+      }
+    }
+  },
+  "index_patterns": [
+    "socket-server-*"
+  ],
+  "composed_of": [],
+  "allow_auto_create": true
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ELK CLuster Setup
+
+Master Server changes EMA-KubernetesVM04
+
+rpm --install elasticsearch-8.12.2-x86_64.rpm
+
+cd /etc/elasticsearch 
+configured changes for cluster
+vi elasticsearch.yml
+
+set the jvm heap size
+cluster.name: production
+node.name: EMA-KubernetesVM04
+network.host: 192.168.150.19
+http.port: 9200
+to disabled ssl communication
+keep true initially
+later you can disabled to false
+xpack.security.http.ssl:
+  enabled: true
+  keystore.path: certs/http.p12
+
+
+
+systemctl daemon-reload
+systemctl enable elasticsearch
+systemctl start elasticsearch
+
+cd /usr/share/elastcisearch/bin/
+./elasticsearch-reset-password -i -u elastic
+curl -k -u elastic:Meeting#4321 https://localhost:9200
+ouput
+{
+  "name" : "EMA-KubernetesVM04",
+  "cluster_name" : "production",
+  "cluster_uuid" : "Hd7lgViFSEazm7rbBEHTYg",
+  "version" : {
+    "number" : "8.12.2",
+    "build_flavor" : "default",
+    "build_type" : "rpm",
+    "build_hash" : "48a287ab9497e852de30327444b0809e55d46466",
+    "build_date" : "2024-02-19T10:04:32.774273190Z",
+    "build_snapshot" : false,
+    "lucene_version" : "9.9.2",
+    "minimum_wire_compatibility_version" : "7.17.0",
+    "minimum_index_compatibility_version" : "7.0.0"
+  },
+  "tagline" : "You Know, for Search"
+}
+
+
+curl  -u elastic:Meeting#4321 http://localhost:9200/_cluster/health?pretty
+output
+{
+  "cluster_name" : "production",
+  "status" : "green",
+  "timed_out" : false,
+  "number_of_nodes" : 1,
+  "number_of_data_nodes" : 1,
+  "active_primary_shards" : 1,
+  "active_shards" : 1,
+  "relocating_shards" : 0,
+  "initializing_shards" : 0,
+  "unassigned_shards" : 0,
+  "delayed_unassigned_shards" : 0,
+  "number_of_pending_tasks" : 0,
+  "number_of_in_flight_fetch" : 0,
+  "task_max_waiting_in_queue_millis" : 0,
+  "active_shards_percent_as_number" : 100.0
+}
+
+./elasticsearch-create-enrollment-token -s node
+eyJ2ZXIiOiI4LjEyLjIiLCJhZHIiOlsiMTkyLjE2OC4xNTAuMTk6OTIwMCJdLCJmZ3IiOiJkODAyMWFlYzgwZjI4NGNjMDM2NjdjYTU3ODBhZWU4ZDJhMDE2YTg2MWJlNGUwYmUyMWZhZWZiNzBmNmI3NjhlIiwia2V5Ijoib2VwMDA0NEI1RURlTU45bFpNZFY6NGlHeXFOWUxUN09GRHBOenBlaXRZQSJ9
+
+
+
+
+Worker Node
+rpm --install elasticsearch-8.12.2-x86_64.rpm
+cd /usr/share/elasticsearch/bin/
+./elasticsearch-reconfigure-node --enrollment-token eyJ2ZXIiOiI4LjEyLjIiLCJhZHIiOlsiMTkyLjE2OC4xNTAuMTk6OTIwMCJdLCJmZ3IiOiJkODAyMWFlYzgwZjI4NGNjMDM2NjdjYTU3ODBhZWU4ZDJhMDE2YTg2MWJlNGUwYmUyMWZhZWZiNzBmNmI3NjhlIiwia2V5Ijoib2VwMDA0NEI1RURlTU45bFpNZFY6NGlHeXFOWUxUN09GRHBOenBlaXRZQSJ9
+
+vi /etc/elasticsearch
+set the jvm heap size
+cluster.name: production
+node.name: SonarQube
+network.host: 192.168.170.6
+http.port: 9200
+systemctl daemon-reload
+systemctl enable elasticsearch.service
+systemctl start elasticsearch.service
+
+systemctl status elasticsearch.service
+
+
+for Master and worker Node
+vi /etc/elasticsearch/elasticsearch.yml
+
+xpack.security.http.ssl:
+  enabled: false
+  keystore.path: certs/http.p12 
+
+Logstash Installtion
+for worker and master node
+rpm --install logstash-8.12.2-x86_64.rpm
+vi /etc/logstash/logstash.yml
+configured the port and ip only
+api.http.host: 127.0.0.1
+api.http.port: 9601
+
+configured logstash.conf file in conf.d 
+
+input {
+  tcp {
+    port => 5045
+    codec => json
+    type => "userActivity"
+  }
+  tcp {
+    port => 5044
+    codec => json
+    type => "generic"
+  }
+}
+ output {
+   if [type] == "userActivity" {
+  elasticsearch {
+    hosts => ["https://localhost:9200"]
+    ssl => true
+    ssl_certificate_verification => false
+    user => "elastic"
+    password => "Meeting#4321"
+    #index => "socket-server-%{+YYYY.MM.dd}"
+    index => "user-activity-%{+YYYY.MM.dd}"
+  }
+}
+  if [type] == "generic" {
+  elasticsearch {
+    hosts => ["https://localhost:9200"]
+    ssl => true
+    ssl_certificate_verification => false
+    user => "elastic"
+    password => "Meeting#4321"
+    index => "socket-server-%{+YYYY.MM.dd}"
+  }
+}
+}
+
+
+and started logstash service
+
+systemctl enable logstash
+systemctl start logstash
+define java heap size
+
+
+Kibana Installation
+
+
+rpm --install kibana-8.12.2-x86_64.rpm
+vi kibana.yml
+server.port: 5601
+server.host: "0.0.0.0"
+elasticsearch.hosts:
+ - http://192.168.150.19:9200
+ - http://192.168.170.6:9200
+ reset password for kibana_system 
+./usr/share/elastcisearch/bin/elasticsearch-reset-password -u kibana_system
+ 
+elasticsearch.username: "kibana_system"     It always has to be kibana system 
+elasticsearch.password: "Meeting#4321"
+
+
+ 
+ 
+Verify on dev tool of kibana
+
+GET /_cat/shards/socket-server-2024.04.15
+
+
+
+
+
+
+
+
+SNAPSHOT REPOSITORY FOR ELK
+https://www.youtube.com/watch?v=9rTkFha1qxA
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

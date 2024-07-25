@@ -1,0 +1,114 @@
+open nginx server 192.168.70.13
+vi /etc/nginx/nginx.conf
+added one line to support _
+underscores_in_headers on;
+nginx.conf
+events {
+        }
+
+http {
+
+  proxy_send_timeout        120;
+  proxy_read_timeout        300;
+  proxy_buffering           off;
+  keepalive_timeout         5 5;
+  tcp_nodelay               on;
+ #ssl_certificate /etc/nginx/certs/ccf4f61237557d79.crt;
+ #ssl_certificate_key /etc/nginx/certs/ccf4f61237557d79.pem;
+  ssl_certificate /etc/nginx/certs/9ca25b051f4f8c07.crt;
+  ssl_certificate_key /etc/nginx/certs/nexuss.mea-emigrate.com.key;
+ #include /etc/letsencrypt/options-ssl-nginx.conf;
+ #ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
+  client_max_body_size      0;
+  underscores_in_headers on;
+
+  server {
+     listen 80;
+     server_name emigrateui.mea-emigrate.com;
+     return 301 https://emigrateui.mea-emigrate.com$request_uri;
+  }
+   server {
+     listen 80;
+     server_name emigrateapi.mea-emigrate.com;
+     return 301 https://emigrateapi.mea-emigrate.com$request_uri;
+  }
+  server {
+    listen                  443 ssl;
+    location / {
+      proxy_pass            http://192.168.70.11:32014/;
+      proxy_redirect        off;
+      proxy_set_header      Host $host;
+      proxy_set_header      X-Real-IP $remote_addr;
+      proxy_set_header      X-Forwarded-For $proxy_add_x_forwarded_for;
+      proxy_set_header      X-Forwarded-Host $server_name;
+      proxy_set_header      X-Forwarded-Proto $scheme;
+     # proxy_set_header X-Custom-Header-With-Underscore "_csrf";
+    }
+  }
+}
+
+open the ansible server 192.168.70.5
+cd /home/meauser
+added below 3 line in ingress2.yml
+
+annotations:
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      proxy_set_header _ $http_x_csrf_token;
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress-myservice
+  namespace: emigrate-dev-ns
+  annotations:
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      proxy_set_header _ $http_x_csrf_token;
+spec:
+  rules:
+    - host: emigrateui.mea-emigrate.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: emigrate-ui-svc
+                port:
+                  number: 80
+    - host: emigrateapi.mea-emigrate.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: gatewayservice-svc
+                port:
+                  number: 8080
+  ingressClassName: nginx
+  
+  
+  
+  
+  
+  kubectl get configmap
+  kubectl edit configmap myrelease-ingress-nginx-controller
+  added below
+  data:
+  enable-underscores-in-headers: "true" #added this line
+  #change the value from false to true for below
+  allow-snippet-annotations: "true"
+  
+  
+  kubectl rollout restart deployment
+  
+  verified with _csrf 
+  curl -L -H "_csrf: nWq4wGRlwx3bOQs6" http://emigrateui.mea-emigrate.com
+  
+  
+  curl -L -H "_csrf: nWq4wGRlwx3bOQs6" http://emigrateapi.mea-emigrate.com/api/auth/login
+  error recieved
+  
+  {"statusCode":400,"error":{"errorId":"foiF5CuY1T33w2yX","errorCode":"EMIGRATE_AUTH_ERR_001","errorMessage":"w.s.au.auth.gen.error"}}
+  
+

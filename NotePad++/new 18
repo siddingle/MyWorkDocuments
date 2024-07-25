@@ -1,0 +1,57 @@
+<configuration debug="true" scan="true" scanPeriod="10 minutes">
+     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%green(example-project) - %cyan(%date [%thread] %-5level %logger{36}) - %message : %magenta([DEVICE_ID=%X{device_id}] [DEVICE_NAME=%X{device_name}] [DEVICE_OS=%X{device_os}] [APP_VER=%X{app_version}] [DEVICE_LANG=%X{device_language}] [IP=%X{ip}] [PORT=%X{port}] [USER_AGENT=%X{user_agent}] [AUTH=%X{auth}] [TX_ID=%X{tx_id}] [CLIENT_ID=%X{client_id}]%n)
+            </pattern>
+        </encoder>
+    </appender> 
+    <appender name="STASH" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+        <destination>172.16.100.20:5044</destination>
+        <!-- You can add multiple destination values -->
+<!--        <destination>100.100.10.100:55525</destination>
+        <destination>100.100.10.101:55525</destination>       --> 
+        <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+            <providers>
+                <timestamp/>
+                <version/> <!-- Logstash json format version, the @version field in the output-->
+                <mdc/> <!-- MDC variables on the Thread will be written as JSON fields-->
+                <context/> <!--Outputs entries from logback's context -->
+                <logLevel/>
+                <loggerName/>
+                <pattern> <!-- we can add some custom fields to be sent with all the log entries. make filtering easier in Logstash-->
+                    <pattern>
+                        {
+                            "appName": "AdministrationService"
+                        }
+                    </pattern>
+                </pattern>
+                <threadName/>
+                <message/>
+                <logstashMarkers/> <!-- Useful so we can add extra information for specific log lines as Markers-->
+                <arguments/> <!--or through StructuredArguments-->
+                <stackTrace/>
+            </providers>
+        </encoder>
+    </appender>
+
+
+    <root level="INFO">
+        <appender-ref ref="STASH"/>
+		<appender-ref ref="STDOUT"/>
+    </root>
+
+</configuration>
+
+
+
+
+
+input {
+  tcp {
+    port => 5044
+    mode => "server"
+    id => "socket-server"
+    type => "socket-server"
+    codec => json_lines
+  }
+}

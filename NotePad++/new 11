@@ -1,0 +1,182 @@
+EFK logs 
+kubectl create namespace kube-logging
+
+#elasticsearch.yaml
+
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: elasticsearch
+  namespace: kube-logging
+spec:
+  serviceName: elasticsearch
+  replicas: 3
+  selector:
+    matchLabels:
+      app: elasticsearch
+  template:
+    metadata:
+      labels:
+        app: elasticsearch
+    spec:
+      containers:
+      - name: elasticsearch
+        image: docker.elastic.co/elasticsearch/elasticsearch:7.2.0
+        resources:
+            limits:
+              cpu: 1000m
+              memory: 1Gi
+            requests:
+              cpu: 500m
+              memory: 500Mi
+        ports:
+        - containerPort: 9200
+          name: rest
+          protocol: TCP
+        - containerPort: 9300
+          name: inter-node
+          protocol: TCP
+        volumeMounts:
+        - name: data
+          mountPath: /usr/share/elasticsearch/data
+        env:
+          - name: cluster.name
+            value: k8s-logs
+          - name: node.name
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.name
+          - name: discovery.seed_hosts
+            value: "elasticsearch-0.elasticsearch"
+          - name: cluster.initial_master_nodes
+            value: "elasticsearch-0"
+          - name: ES_JAVA_OPTS
+            value: "-Xms512m -Xmx512m"
+          - name: path.repo
+            value: "/tmp"
+      initContainers:
+      - name: fix-permissions
+        image: busybox
+        command: ["sh", "-c", "chown -R 1000:1000 /usr/share/elasticsearch/data"]
+        securityContext:
+          privileged: true
+        volumeMounts:
+        - name: data
+          mountPath: /usr/share/elasticsearch/data
+      - name: increase-vm-max-map
+        image: busybox
+        command: ["sysctl", "-w", "vm.max_map_count=262144"]
+        securityContext:
+          privileged: true
+      - name: increase-fd-ulimit
+        image: busybox
+        command: ["sh", "-c", "ulimit -n 65536"]
+        securityContext:
+          privileged: true
+  volumeClaimTemplates:
+  - metadata:
+      name: data
+      labels:
+        app: elasticsearch
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: ebs
+      resources:
+        requests:
+          storage: 500Mi
+		  
+		  
+		  
+		  
+
+#fluentdsvc
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: fluentd-sa
+  labels:
+    k8s-app: fluentd
+    kubernetes.io/cluster-service: "true"
+    addonmanager.kubernetes.io/mode: Reconcile
+---
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: fluentd-clusterrole
+  labels:
+    k8s-app: fluentd
+    kubernetes.io/cluster-service: "true"
+    addonmanager.kubernetes.io/mode: Reconcile
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - "namespaces"
+  - "pods"
+  verbs:
+  - "get"
+  - "watch"
+  - "list"
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: fluentd-clusterrolebiding
+  labels:
+    k8s-app: fluentd
+    kubernetes.io/cluster-service: "true"
+    addonmanager.kubernetes.io/mode: Reconcile
+subjects:
+- kind: ServiceAccount
+  name: fluentd-sa
+  namespace: kube-logging
+  apiGroup: ""
+roleRef:
+  kind: ClusterRole
+  name: fluentd-clusterrole
+  apiGroup: ""		
+
+
+
+
+
+
+[root@master-node-new EFKLogs]# kubectl apply -f 1-elasticsearch.yaml
+statefulset.apps/elasticsearch created
+[root@master-node-new EFKLogs]#
+
+[root@master-node-new EFKLogs]# kubectl apply -f 2a-fluentdsva.yaml
+serviceaccount/fluentd-sa created
+clusterrole.rbac.authorization.k8s.io/fluentd-clusterrole created
+clusterrolebinding.rbac.authorization.k8s.io/fluentd-clusterrolebiding created
+
+[root@master-node-new EFKLogs]# kubectl apply -f 2b-fluentddeploy.yaml
+deployment.apps/fluentd created
+
+[root@master-node-new EFKLogs]# kubectl apply -f 2c-fluentdconfigmap.yaml
+configmap/fluent-bit-config created
+
+[root@master-node-new EFKLogs]# kubectl apply -f 2d-fluentddaemonset.yaml
+daemonset.apps/fluent-bit created
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[root@master-node-new EFKlogs2]# kubectl apply -f 1-elasticsearch_svc.yaml
+service/elasticsearch created
+[root@master-node-new EFKlogs2]# kubectl apply -f 2-elasticsearch_statefulset.yaml
+statefulset.apps/es-cluster created
+
+
+

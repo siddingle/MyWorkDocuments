@@ -1,0 +1,15 @@
+[root@master-node-new runscript]# kubectl get deploy -o wide
+NAME                      READY   UP-TO-DATE   AVAILABLE   AGE     CONTAINERS                IMAGES                                                          SELECTOR
+administrationservice     1/1     1            1           3m18s   administrationservice     nexus.mea-emigrate.com:9890/nexus/administrationservice:103     app=administrationservice
+authenticationservice     1/1     1            1           8h      authenticationservice     nexus.mea-emigrate.com:9890/nexus/authenticationservice:33      app=authenticationservice
+emigrantservice           1/1     1            1           5m11s   emigrantservice           nexus.mea-emigrate.com:9890/nexus/emigrantservice:140           app=emigrantservice
+emigrateui                1/1     1            1           22m     emigrateui                nexus.mea-emigrate.com:9890/nexus/emigrateui:latest             app=gateway
+foreignrecruiterservice   1/1     1            1           3m51s   foreignrecruiterservice   nexus.mea-emigrate.com:9890/nexus/foreignrecruiterservice:149   app=foreignrecruiterservice
+gatewayservice            1/1     1            1           8h      gatewayservice            nexus.mea-emigrate.com:9890/nexus/gatewayservice:42             app=gatewayservice
+grievanceservice          1/1     1            1           8h      grievanceservice          nexus.mea-emigrate.com:9890/nexus/grievanceservice:57           app=grievanceservice
+notificationservice       1/1     1            1           8h      notificationservice       nexus.mea-emigrate.com:9890/nexus/notificationservice:17        app=notificationservice
+paymentservice            1/1     1            1           8h      paymentservice            nexus.mea-emigrate.com:9890/nexus/paymentservice:17             app=paymentservice
+recruitingagentservice    1/1     1            1           8h      recruitingagentservice    nexus.mea-emigrate.com:9890/nexus/recruitingagentservice:151    app=recruitingagentservice
+reportservice             1/1     1            1           8h      reportservice             nexus.mea-emigrate.com:9890/nexus/reportservice:46              app=reportservice
+securityservice           1/1     1            1           8h      securityservice           nexus.mea-emigrate.com:9890/nexus/securityservice:53            app=securityservice
+workflowservice           1/1     1            1           8h      workflowservice           nexus.mea-emigrate.com:9890/nexus/workflowservice:32            app=workflo

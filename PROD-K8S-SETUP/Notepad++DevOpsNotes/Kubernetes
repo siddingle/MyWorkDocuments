@@ -1,0 +1,95 @@
+var/hosts 
+
+yum update -y
+
+sed -i 's/SELINUX=enforcing/SELINUX=disabled/g' /etc/selinux/config
+setenforce 0
+reboot
+
+
+
+cat <<EOF > /etc/sysctl.d/k8s.conf
+net.bridge.bridge-nf-call-ip6tables = 1
+net.bridge.bridge-nf-call-iptables = 1
+EOF
+
+sysctl --system
+
+
+sudo yum install -y yum-utils
+sudo yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+sudo yum install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+sudo systemctl enable docker
+sudo systemctl start docker
+sudo systemctl enable containerd
+sudo systemctl start containerd
+
+vi /etc/yum.repos.d/kubernetes.repo
+[kubernetes]
+name=Kubernetes
+baseurl=https://packages.cloud.google.com/yum/repos/kubernetes-el7-x86_64
+enabled=1
+gpgcheck=1
+repo_gpgcheck=1
+gpgkey=https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
+
+yum install kubeadm
+systemctl enable kubelet
+systemctl start kubelet
+kubeadm init
+swapoff -a
+rm -rf /etc/containerd/config.toml
+sudo systemctl enable containerd
+sudo systemctl start containerd
+kubeadm init --ignore-preflight-errors=all
+
+
+
+
+mkdir -p $HOME/.kube
+cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+chown $(id -u):$(id -g) $HOME/.kube/config
+export KUBECONFIG=/etc/kubernetes/admin.conf
+
+
+Your Kubernetes control-plane has initialized successfully!
+
+To start using your cluster, you need to run the following as a regular user:
+
+  mkdir -p $HOME/.kube
+  sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+  sudo chown $(id -u):$(id -g) $HOME/.kube/config
+
+Alternatively, if you are the root user, you can run:
+
+  export KUBECONFIG=/etc/kubernetes/admin.conf
+
+You should now deploy a pod network to the cluster.
+Run "kubectl apply -f [podnetwork].yaml" with one of the options listed at:
+  https://kubernetes.io/docs/concepts/cluster-administration/addons/
+
+Then you can join any number of worker nodes by running the following on each as root:
+
+kubeadm join 192.168.150.16:6443 --token bhb3l7.z5oceedaeh02lub6 \
+        --discovery-token-ca-cert-hash sha256:5718825c111091efe0d107b374ed2f8947f1be5eeaae0205834a1dd44fed7d37
+		
+
+
+sudo systemctl status kubelet
+
+/etc/cni/net.d/
+Please check this directory for CNI certificate
+
+
+ journalctl -u kubelet
+/var/lib/kubelet/config.yaml
+getting error 	
+
+
+
+kubeadm reset
+
+kubeadm token create --print-join-command
+
+		
+		

@@ -1,0 +1,59 @@
+SOURCE CODE MANAGEMENT   ---- git,    subversion
+
+
+CI TOOL   ---   JENKINS, BAMBOO, TEANCITY
+
+
+CONTINUOS TESTING TOOL -- SELENIUM,  JMETER, APPIUM, RANOREX, TESTCOMPLETE,QTP
+
+
+CONFIGURATION MANAGEMENT TOOLS-- Ansible,terraform,chef,puppet,slat
+It involves consistency amongs the hardware and software assets or infrastructure
+
+
+CONTAINER MANANGEMENT TOOL --DOCKER,KUBERNATES,APACHE MESOS 
+WE CAN USE THIS SCHEDULING, STORING, MONITORING.
+
+RELEASE MANAGEMENT TOOL --CIRCLECI,CODESHIP,SHIPPABLE 
+
+CONTINUOUS MONITORING TOOL --SOLARWIND ,NAGIOS, TENABLE
+ 
+
+
+
+
+
+
+
+GitHub ---its a version control tool so we can make a changes track those changes commit those changes and push those changes into production environment
+
+Docker--- it is containeriazation tool which its isolate themself for different containers does not virtulize hardware component
+
+Apache Maven -- it is automate bills required for software building and dependencies the software requires. It uses xml file to do this thing like software--dependencies--configuration it ias project object model pom.xml
+
+Jenkins -- its an open source  uses for automation CI so human intervation will be less
+it will take changes directly and automate test and build will get started 
+similar tools bamboo teamcity
+
+ configuration management -- puppet,chef and ansible
+
+
+
+nagios -monitoring tool --servers infrastructure and networks
+
+sonarQube---Quality control tools which checks bugs.It supports 25+languages
+
+
+Cloud tools
+Aws-codecommit,codeBuild,codeDelpoy,codePipeline
+Azure-
+
+
+
+
+
+
+
+
+
+

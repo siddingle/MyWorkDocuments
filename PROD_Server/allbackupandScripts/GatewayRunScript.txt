@@ -1,0 +1,21 @@
+current_user=$(whoami)
+
+if [ "$current_user" == "meauser" ]; then
+
+fuser -k 8080/tcp
+echo "8080 Port Killed and Starting GatewayService now..."
+
+#nohup java -Dlogging.config=/workspace/logConfig/gatewayServiceLogConfig.xml -jar GatewayService-0.0.1-SNAPSHOT.jar --spring.config.location=application_m.properties  --spring.config.additional-location=services_UAT.properties -> startup-logs/Gateway.out &
+
+
+#nohup java -jar /opt/emigrate/server/packages/GatewayService-0.0.1-SNAPSHOT.jar --spring.config.location=/opt/emigrate/server/packages/application_m.properties  --spring.config.additional-location=/opt/emigrate/server/packages/services_UAT.properties -> startup-logs/Gateway.out &
+
+nohup java -Xms2048m -Xmx2048m -Dreactor.netty.http.server.accessLogEnabled=true -Dlogging.config=/opt/emigrate/server/packages/logConfig/gatewayServiceLogConfig.xml -Xlog:gc*:file=/opt/emigrate/logs/gcLogs/GatewayService-GC.log:time -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/opt/emigrate/logs/gcLogs -Djava.net.preferIPv4Stack=true -javaagent:/opt/emigrate/server/packages/monitoringAgent/vunet-opentelemetry-javaagent-1.18.0.jar -Dotel.resource.attributes=application=Emigrate -Dotel.service.name=GatewayService -Dotel.metrics.exporter=none -Dotel.exporter.otlp.endpoint=http://192.168.210.24:4317 -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.port=5000 -Dcom.sun.management.jmxremote.rmi.port=5000 -Dcom.sun.management.jmxremote.host=0.0.0.0 -Djava.rmi.server.hostname=0.0.0.0 -jar /opt/emigrate/server/packages/GatewayService-0.0.1-SNAPSHOT.jar --spring.config.location=/opt/emigrate/server/packages/application_m.properties --spring.config.additional-location=/opt/emigrate/server/packages/services_PROD.properties -> startup-logs/Gateway.out &
+
+sleep 5
+echo "GatewayService is up and running... Kindly Check startup-logs for startup Logs, api logs shall be available @ ../../logs"
+
+else
+        echo "$current_user is not a meauser, Please login as meauser"
+
+fi

@@ -1,0 +1,110 @@
+The Jenkins project has decided to end its support of Red Hat Enterprise Linux 7 in late 2023 rather than waiting until 2024. After Nov 16, 2023, the Jenkins project will no longer support running Jenkins on Red Hat Enterprise Linux 7 or its derivatives. Jenkins container images based on CentOS 7 will no longer be supported after Nov 16, 2023.
+
+Users should replace their Red Hat Enterprise Linux 7 installations with another operating system. If they prefer to continue with Red Hat or one of its derivatives, they have many alternatives, including:
+
+Red Hat Enterprise Linux 8 or 9
+
+AlmaLinux 8 or 9
+
+Rocky Linux 8 or 9
+
+Oracle Linux 8 or 9
+
+
+
+
+
+
+
+
+
+workflow
+notification
+EReport
+
+
+/opt/sonatype-work/nexus3/db
+ln -s /opt/db/component /opt/sonatype-work/nexus3/db/component
+[root@ttlcicd db]# ln -s /opt/db/config /opt/sonatype-work/nexus3/db/config
+ln -s /opt/sonatype-work/nexus3/db/component /opt/db/component
+
+-rw-r--r-- 1 root root    65536 Sep 11 16:37 config.57.wal
+root     175796 175639  0 17:21 pts/3    00:00:00 grep --color=auto jav
+
+frozen.marker
+
+http://192.168.150.8:8081/nexus/service/rest/system/unfreeze
+
+
+
+
+
+renaming
+systemctl stop jenkins
+--------------------------------------------------------------------------------------
+logviewer
+http://192.168.102.55:8112/
+----------------------------------------------------------------------------------------
+docker env
+Admin 118
+Auth 37
+Document 13
+EC 146
+FE 155
+Gateway 46
+Grievance 62
+Insrance 11
+Notification 22
+Payment 22
+RA 156
+Report 51
+Security 58
+Workflwo 36
+
+
+export const environment = {
+    production: false,
+    API_URL: 'https://mea.trigyn.com/emigrateSITAPI',
+    DEV_API_URL: 'https://mea.trigyn.com/emigrateSITAPI',
+    DEV_URL_REPORT: 'https://mea.trigyn.com/emigrateSITAPI',
+    STATIC_FILE_PATH: 'https://mea.trigyn.com/emigrateSITAPI',
+    DEV_URL_IP: 'http://192.168.150.9/emigrateReport/api/getMyIP',
+    DEV_URL_CDN: 'https://mea.trigyn.com/emigrateSAI/assets/pdfs',
+};
+
+
+export const environment = {
+    production: false,
+    // API_URL: 'http://192.168.102.54:8080',
+    // DEV_API_URL: 'http://192.168.102.54:8080',
+    API_URL: 'https://apps.trigyn.com/emigrateAPI',
+    DEV_API_URL: 'https://apps.trigyn.com/emigrateAPI',
+    DEV_URL_REPORT: 'https://apps.trigyn.com/emigrateAPI',
+    DEV_URL_IP: 'https://apps.trigyn.com/emigrateAPI/rs/getMyIP',
+    STATIC_FILE_PATH: 'https://apps.trigyn.com/emigrate',
+    DEV_URL_EMAIL_REPORT: 'https://apps.trigyn.com/emigrateReport',
+    DEV_URL_CDN: 'https://apps.trigyn.com/emigrate/assets/pdfs',
+    PAYU_URL: 'https://test.payu.in/_payment',
+    SBI_URL: 'https://test.sbiepay.sbi/secure/AggregatorHostedListener',
+    BILLDESK_URL: 'https://uat.billdesk.com/pgidsk/PGIMerchantPayment',
+    IFFCO_TOKIO_URL: 'http://test.pbbyinsurancepolicy.com/ui/GCPolicyD.aspx',
+
+ .
+
+
+
+docker env
+Admin 118
+Auth 37
+Document 13
+EC 146
+FE 155
+Gateway 46
+Grievance 62
+Insrance 11
+Notification 22
+Payment 22
+RA 156
+Report 51
+Security 58
+Workflwo 36

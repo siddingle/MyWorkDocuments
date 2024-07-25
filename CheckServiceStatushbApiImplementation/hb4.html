@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Viewer</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f8f9fa;
+        }
+        .api-response {
+            margin-bottom: 20px;
+            padding: 15px;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            background-color: #ffffff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .response-title {
+            font-weight: bold;
+            font-size: 1.2em;
+            color: #4d749e;
+            margin-bottom: 10px;
+        }
+        table {
+            width: 80%;
+            margin-top: 5px;
+            border-collapse: collapse;
+            font-size: 0.9em; /* Smaller font size for compactness */
+        }
+        th, td {
+            padding: 4px;
+            text-align: left;
+            border: 1px solid #007bff;
+        }
+        th {
+            background-color: #4d749e;
+            color: white;
+            text-transform: uppercase;
+        }
+        td {
+            background-color: #f0f8ff;
+        }
+        tr:hover td {
+            background-color: #e7f1ff;
+        }
+        .error {
+            color: red;
+            font-weight: bold;
+        }
+        .container {
+            max-width: 1200px;
+            margin: auto;
+        }
+        h2 {
+            margin-bottom: 30px;
+            color:#415166
+        }
+        .btn-group {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        .btn-env {
+            background-color: #4d749e;
+            color: white;
+        }
+        .response-section {
+            display: flex;
+            justify-content: space-between;
+        }
+        .response-column {
+            width: 29%;
+        }
+        .vpn-warning {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            background-color: #e7cd61;
+            color: #333;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>EMigrate Project Running Status Dashboard</h2>
+
+    <div class="btn-group">
+        <button class="btn btn-env" onclick="fetchAPIs('left')">PROD</button>
+        <button class="btn btn-env" onclick="fetchAPIs('center')">APP1</button>
+        <button class="btn btn-env" onclick="fetchAPIs('right')">APP2</button>
+    </div>
+
+    <div class="response-section">
+        <div id="responses-left" class="response-column"></div>
+        <div id="responses-center" class="response-column"></div>
+        <div id="responses-right" class="response-column"></div>
+    </div>
+</div>
+<div class="vpn-warning">
+    Note: APP1 and APP2 can be accessed only through VPN connection.
+</div>
+
+<script>
+    const apiEndpoints = {
+        left: [
+            { name: 'AdministrationService', url: 'https://emigrate.gov.in/api/admin/hb' },
+            { name: 'AuthenticationService', url: 'https://emigrate.gov.in/api/auth/hb' },
+            { name: 'EmigrantService', url: 'https://emigrate.gov.in/api/em/hb' },
+            { name: 'ForeinRecruiterService', url: 'https://emigrate.gov.in/api/fr/hb' },
+            { name: 'GrievanceService', url: 'https://emigrate.gov.in/api/gs/hb' },
+            { name: 'InsuranceService', url: 'https://emigrate.gov.in/api/is/hb' },
+            { name: 'NotificationService', url: 'https://emigrate.gov.in/api/ns/hb' },
+            { name: 'PaymentService', url: 'https://emigrate.gov.in/api/payment/hb' },
+            { name: 'ReportService', url: 'https://emigrate.gov.in/api/rs/hb' },
+            { name: 'RecrutingAgentService', url: 'https://emigrate.gov.in/api/ra/hb' },
+            { name: 'SecurityService', url: 'https://emigrate.gov.in/api/ss/hb' },
+            { name: 'WorkflowService', url: 'https://emigrate.gov.in/api/wf/process/hb' }
+        ],
+        center: [
+            { name: 'AdministrationService', url: 'http://192.168.150.35:8080/api/admin/hb' },
+            { name: 'AuthenticationService', url: 'http://192.168.150.35:8080/api/auth/hb' },
+            { name: 'EmigrantService', url: 'http://192.168.150.35:8080/api/em/hb' },
+            { name: 'ForeinRecruiterService', url: 'http://192.168.150.35:8080/api/fr/hb' },
+            { name: 'GrievanceService', url: 'http://192.168.150.35:8080/api/gs/hb' },
+            { name: 'InsuranceService', url: 'http://192.168.150.35:8080/api/is/hb' },
+            { name: 'NotificationService', url: 'http://192.168.150.35:8080/api/ns/hb' },
+            { name: 'PaymentService', url: 'http://192.168.150.35:8080/api/payment/hb' },
+            { name: 'ReportService', url: 'http://192.168.150.35:8080/api/rs/hb' },
+            { name: 'RecrutingAgentService', url: 'http://192.168.150.35:8080/api/ra/hb' },
+            { name: 'SecurityService', url: 'http://192.168.150.35:8080/api/ss/hb' },
+            { name: 'WorkflowService', url: 'http://192.168.150.35:8080/api/wf/process/hb' }
+        ],
+        right: [
+            { name: 'AdministrationService', url: 'http://192.168.150.22:8080/api/admin/hb' },
+            { name: 'AuthenticationService', url: 'http://192.168.150.22:8080/api/auth/hb' },
+            { name: 'EmigrantService', url: 'http://192.168.150.22:8080/api/em/hb' },
+            { name: 'ForeinRecruiterService', url: 'http://192.168.150.22:8080/api/fr/hb' },
+            { name: 'GrievanceService', url: 'http://192.168.150.22:8080/api/gs/hb' },
+            { name: 'InsuranceService', url: 'http://192.168.150.22:8080/api/is/hb' },
+            { name: 'NotificationService', url: 'http://192.168.150.22:8080/api/ns/hb' },
+            { name: 'PaymentService', url: 'http://192.168.150.22:8080/api/payment/hb' },
+            { name: 'ReportService', url: 'http://192.168.150.22:8080/api/rs/hb' },
+            { name: 'RecrutingAgentService', url: 'http://192.168.150.22:8080/api/ra/hb' },
+            { name: 'SecurityService', url: 'http://192.168.150.22:8080/api/ss/hb' },
+            { name: 'WorkflowService', url: 'http://192.168.150.22:8080/api/wf/process/hb' }
+        ]
+    };
+
+    async function fetchAPIs(section) {
+        const responsesDiv = document.getElementById(`responses-${section}`);
+        responsesDiv.innerHTML = ''; // Clear previous responses
+
+        for (const endpoint of apiEndpoints[section]) {
+            const apiResponseDiv = document.createElement('div');
+            apiResponseDiv.classList.add('api-response');
+
+            try {
+                const response = await fetch(endpoint.url);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                apiResponseDiv.innerHTML = `
+                    <div class="response-title">${endpoint.name}</div>
+                    <table class="table table-sm table-bordered">
+                        <tbody>
+                            <tr>
+                                <th>Build Number</th>
+                                <td>${data["Build-Number"]}</td>
+                            </tr>
+                            <tr>
+                                <th>Service Version</th>
+                                <td>${data["Service-Version"]}</td>
+                            </tr>
+                            <tr>
+                                <th>Spring Boot Version</th>
+                                <td>${data["Spring-Boot-Version"]}</td>
+                            </tr>
+                            <tr>
+                                <th>Git Commit</th>
+                                <td>${data["Git-Commit"]}</td>
+                            </tr>
+                            <tr>
+                                <th>Git Branch</th>
+                                <td>${data["Git-Branch"]}</td>
+                            </tr>
+                            <tr>
+                                <th>Service Name</th>
+                                <td>${data["Service-Name"]}</td>
+                            </tr>
+                            <tr>
+                                <th>Build Date</th>
+                                <td>${data["Build-Date"]}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                `;
+            } catch (error) {
+                apiResponseDiv.innerHTML = `<div class="error">Error fetching data for ${endpoint.name}: ${error.message}. Please check the VPN connection, else please reachout to Infra Support Team</div>`;
+            }
+
+            responsesDiv.appendChild(apiResponseDiv);
+        }
+    }
+</script>
+
+</body>
+</html>
+

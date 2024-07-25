@@ -1,0 +1,70 @@
+tow directtories are there
+https://help.sonatype.com/repomanager3/nexus-repository-administration/configuring-ssl#ConfiguringSSL-UsingaServerCertificateWhichRequiresSNI
+https://support.sonatype.com/hc/en-us/articles/213465768-SSL-Certificate-Guide?_ga=2.21578808.2049663170.1698333547-708147790.1691395903
+
+data directory
+/opt/sonatype-work/nexus3/etc/nexus.properties
+application-port-ssl=9883
+uncommented thus line 
+nexus-args=${jetty.etc}/jetty-https.xml, and added 
+added new linne 
+ssl.etc=${karaf.data}/etc/ssl
+
+
+Installation directory 
+/opt/nexus-3.58.1-02/etc/jetty
+
+
+
+
+
+admin 112
+auth 38
+EC 229
+FE 288
+Gateway 17
+Grievance 92
+Insurance 23
+Notification 29
+Payment 76
+RA 344
+Report 232
+Security 82
+Workflow 33
+
+
+
+
+root       13775       1  0 Sep29 ?        01:05:42 java -jar IntegrationService-0.0.1-SNAPSHOT.jar --spring.config.additional-location=services_DEV.properties -
+root       13840       1  0 Sep29 ?        01:11:27 java -jar DocumentServerService-0.0.1-SNAPSHOT.jar --spring.config.additional-location=services_DEV.properties -
+root      862694       1  0 Oct10 ?        00:56:27 java -jar NotificationService-0.0.1-SNAPSHOT.jar --spring.config.additional-location=services_DEV.properties -
+root     1743065       1  0 Oct21 ?        00:29:31 java -jar AuthenticationService-0.0.1-SNAPSHOT.jar --spring.config.additional-location=services_DEV.properties -
+root     2212455       1  0 Oct27 ?        00:07:41 java -jar GatewayService-0.0.1-SNAPSHOT.jar --spring.config.additional-location=services_accesstoken.properties -
+root     2223061       1  0 Oct27 ?        00:08:05 java -ea -Dlog-viewer.config-file=/workspace/log-viewer-1.0.6/config.conf -jar /workspace/log-viewer-1.0.6/lib/log-viewer-cli-1.0.6.jar startup
+root     2523952       1  0 11:39 ?        00:02:33 java -jar WorkflowService-0.0.1-SNAPSHOT.jar --spring.config.additional-location=services_DEV.properties -
+root     2524132       1  0 11:40 ?        00:01:38 java -jar GatewayService-0.0.1-SNAPSHOT.jar --spring.config.additional-location=services_DEV.properties -
+root     2524537       1  0 11:49 ?        00:03:06 java -jar ReportService-0.0.1-SNAPSHOT.jar --spring.config.additional-location=services_DEV.properties -
+root     2530233       1  0 14:08 ?        00:02:28 java -jar SecurityService-0.0.1-SNAPSHOT.jar --spring.config.additional-location=services_DEV.properties -
+root     2535306       1  0 16:04 ?        00:02:40 java -jar AdministrationService-0.0.1-SNAPSHOT.jar --spring.config.additional-location=services_DEV.properties -
+root     2535340       1  0 16:04 ?        00:01:45 java -jar InsuranceService-0.0.1-SNAPSHOT.jar --spring.config.additional-location=services_DEV.properties -
+root     2537545       1  0 16:54 ?        00:01:45 java -jar GrievanceService-0.0.1-SNAPSHOT.jar --spring.config.additional-location=services_DEV.properties -
+root     2537601       1  0 16:54 ?        00:02:13 java -jar EmigrantService-0.0.1-SNAPSHOT.jar --spring.config.additional-location=services_DEV.properties -
+root     2538793       1  0 17:18 ?        00:01:23 java -jar PaymentService-0.0.1-SNAPSHOT.jar --spring.config.additional-location=services_DEV.properties -
+root     2540981       1  1 18:05 ?        00:01:50 java -jar RecruitingAgentService-0.0.1-SNAPSHOT.jar --spring.config.additional-location=services_DEV.properties -
+root     2547803       1 11 20:36 pts/0    00:01:33 java -jar ForeignRecruiterService-0.0.1-SNAPSHOT.jar --spring.config.additional-location=services_DEV.properties -
+
+[root@emigrate accesstoken-change]# ps -ef | grep  httpd
+root      725602       1  0 Oct08 ?        00:02:27 /usr/sbin/httpd -DFOREGROUND
+apache   1714051  725602  0 Oct21 ?        00:00:00 /usr/sbin/httpd -DFOREGROUND
+apache   1714052  725602  0 Oct21 ?        00:05:52 /usr/sbin/httpd -DFOREGROUND
+apache   1714053  725602  0 Oct21 ?        00:06:00 /usr/sbin/httpd -DFOREGROUND
+apache   1714054  725602  0 Oct21 ?        00:05:56 /usr/sbin/httpd -DFOREGROUND
+apache   1739193  725602  0 Oct21 ?        00:05:55 /usr/sbin/httpd -DFOREGROUND
+root     2548749 2547636  0 20:56 pts/0    00:00:00 grep --color=auto httpd
+
+/home/migration/emigrate/server/packages/newbuild/accesstoken-change
+
+
+
+systemctl status httpd.service
+

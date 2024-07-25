@@ -1,0 +1,75 @@
+@Library('emigrate-cicd-libraries') _
+emigrate
+pipeline {
+    
+    agent {
+        label "${AGENT}"
+    }
+    
+    tools {
+        maven "Maven 363"
+    }
+    
+     environment {
+        
+        KUBECONFIG = credentials('emigrate_kube_configfile')
+    }
+         
+    
+    stages {
+        stage('Build') {
+            steps {
+              emigrate ('Build')
+            }
+        }
+        
+        stage('SonarQube-Code Analysis') {
+            steps {
+                echo "Code Analysis"
+                emigrate ('codeQualityAnalysis')
+            }
+        }  
+        
+
+        
+            stage('Docker Image and Push to Nexus') {
+                steps {
+                    echo "Creating an Docker Image"
+                   emigrate ('dockerImagePushToNexus')
+               }
+             
+        } 
+                    
+        
+        
+            stage('Deployment to K8S') {
+                steps {
+               emigrate ('deploymentToKuberentes')
+                  
+                }
+            }
+            
+            stage('Monitoring Deployment') {
+                steps {
+                    emigrate ('monitoringDeployment')
+                }
+            }
+    }
+
+    post {
+        success {
+            echo 'Pipeline succeeded'
+        }
+        failure {
+            echo 'Pipeline failed'
+        }
+    }
+}
+        
+       
+        
+        
+        
+      
+    
+    

@@ -1,0 +1,26 @@
+#!/bin/sh
+
+Module=Emigrate-UI-cdn
+env="PROD"
+buildn="$1"
+branch="master"
+rm -rf cdn
+mkdir cdn
+
+
+if [ $buildn -gt 0 ] && [ $env = PROD ]; then
+    echo "Download started for $Module-$env-$buildn-$(date +%d-%b) :- $(date +%T)"
+    pwd
+
+    wget http://192.168.150.8:8080/job/$Module/$buildn/artifact/e-migrate-cdn-$branch.zip --output-document e-migrate-cdn-$branch-$(date +%d-%b).zip
+    echo "Unzipping e-migrate-cdn-$branch-$(date +%d-%b).zip"
+      unzip e-migrate-cdn-$branch-$(date +%d-%b).zip -d ./cdn
+   #  unzip e-migrate-cdn-$branch-$(date +%d-%b).zip
+
+    echo "Copy cdn into ../html/assets"
+    cp -R cdn/assets/pdfs ../html/live/assets/
+    chmod 755 -R /var/www/html/live/*
+else
+    echo "This file requires two command line argument [1=EnvName(Possible values are[DEV,QA,UAT] only)  2=BuildNumber eg. (./copyEmigrateUI.sh DEV 41)]"
+
+fi

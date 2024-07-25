@@ -1,0 +1,15 @@
+fuser -k 8081/tcp
+
+echo "8081 Port Killed and Starting Services now..."
+
+echo "Starting AdministrationService"
+
+
+nohup java -Dlogging.config=/workspace/logConfig/adminServiceLogConfig.xml -jar AdministrationService-0.0.1-SNAPSHOT.jar --spring.config.additional-location=services_UAT.properties -> startup-logs/AdministrationService.out &
+
+#nohup java -Dlogback.configurationFile=/workspace/logConfig/adminServiceLogConfig.xml -jar AdministrationService-0.0.1-SNAPSHOT.jar --spring.config.additional-location=services_UAT.properties -> startup-logs/AdministrationService.out &
+
+#nohup java -jar AdministrationService-0.0.1-SNAPSHOT.jar --spring.config.additional-location=services_UAT.properties -> startup-logs/AdministrationService.out &
+
+sleep 2
+echo "Admin Services are up and running... Kindly Check startup-logs for startup Logs, api logs shall be available @ ../../logs"

@@ -1,0 +1,60 @@
+UAT 4th Nov
+
+
+-rwxrwxrwx  1 root      root      112715156 Nov  5 18:24 EmigrantService-0.0.1-SNAPSHOT.jar
+-rwxrwxrwx  1 migration migration  78937501 Nov  5 17:58 RecruitingAgentService-0.0.1-SNAPSHOT.jar
+-rwxrwxrwx  1 migration migration 127826602 Nov  5 17:32 ForeignRecruiterService-0.0.1-SNAPSHOT.jar
+-rwxrwxrwx. 1 migration migration 135923830 Nov  5 15:53 ReportService-0.0.1-SNAPSHOT.jar
+-rw-r--r--  1 root      root       75467340 Nov  5 10:50 PaymentService-0.0.1-SNAPSHOT.jar
+-rwxrwxrwx  1 migration migration  78123855 Nov  4 23:04 AdministrationService-0.0.1-SNAPSHOT.jar
+-rwxrwxrwx  1 migration migration  77910050 Nov  3 10:40 GrievanceService-0.0.1-SNAPSHOT.jar
+-rwxrwxrwx  1 migration migration  34325878 Nov  1 21:13 GatewayService-0.0.1-SNAPSHOT.jar
+-rw-r--r--  1 root      root       81182993 Oct 31 18:27 InsuranceService-0.0.1-SNAPSHOT.jar
+-rwxrwxrwx  1 migration migration  78021712 Oct 31 17:07 SecurityService-0.0.1-SNAPSHOT.jar
+
+
+Hello I am starting UI build process -as part of it UAT will be updated with new UI changes and from backend only following services (AdministrationService, ReportService, RecruitingAgentService, ForeignRecruiterService, EmigrantService, GrievanceService, PaymentService, GatewayService, InsuranceService, SecurityService) will be updated.
+
+
+
+Hello UAT Move with a latest UI changes completed and following backend services has been updated
+took build from jenkins DC 
+UI build #200  UAT
+UI CDN #6   master
+IntegrationService build #1
+took build from apps.trigyn.com-QA-Release
+AdministrationService build #129
+ReportService build #270
+RecruitingAgentService build #397
+ForeignRecruiterService build #349
+EmigrantService build #300
+GrievanceService build #97
+PaymentService build #104
+GatewayService build #33
+InsuranceService build #26
+SecurityService build #84
+
+
+
+
+
+
+
+
+
+nohup java -jar jenkins.war --prefix=/jenkins2 -> logs/jenkins.out &
+https://apps.trigyn.com/jenkins2/job/EMigrate-GatewayService/lastSuccessfulBuild/artifact/SvrJsbJarFdr/GatewayService-0.0.1-SNAPSHOT.jar
+https://apps.trigyn.com/jenkins2/job/EMigrate-GatewayService/ws/GatewayService/src/main/resources/application.properties
+https://apps.trigyn.com/jenkins2/job/EMigrate-GatewayService/ws/GatewayService/src/main/resources/application_QA.properties
+
+/root/.jenkins/workspace/EMigrate-GatewayService/GatewayService/src/main/resources
+
+
+changes on Dev env
+added report image path on properties file to support images
+updated copycdn to copy reports inside html
+update copyjenkinsbuild.sh to copy and backup service properties 
+
+
+
+

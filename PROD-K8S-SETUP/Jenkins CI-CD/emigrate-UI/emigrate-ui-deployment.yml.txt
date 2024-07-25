@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: emigrateui
+  labels:
+    app: emigrateui
+  namespace: emigrate-dev-ns      
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: emigrateui
+  template:
+    metadata:
+      labels:
+        app: emigrateui
+    spec:
+      containers:
+      - name: emigrateui
+        image: nexuspoc.mea-emigrate.com/emigrate-ui:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 80
+      imagePullSecrets:
+       - name: nexuspoc
+  
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: emigrate-ui-svc
+  labels:
+    app: emigrateui  
+  namespace: emigrate-dev-ns
+spec:
+  selector:
+      app: emigrateui
+  ports:
+    - port: 80
+      targetPort: 80
+
+
+

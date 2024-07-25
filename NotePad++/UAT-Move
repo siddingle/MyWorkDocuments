@@ -1,0 +1,82 @@
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------
+07-Sept-2023
+
+-rwxrwxrwx  1 migration migration  78694505 Sep  7 15:56 RecruitingAgentService-0.0.1-SNAPSHOT.jar
+-rwxrwxrwx  1 migration migration 127793002 Sep  7 14:45 ForeignRecruiterService-0.0.1-SNAPSHOT.jar
+-rwxrwxrwx. 1 migration migration 134268065 Sep  7 14:20 ReportService-0.0.1-SNAPSHOT.jar
+-rwxrwxrwx  1 root      root      112611242 Sep  7 14:15 EmigrantService-0.0.1-SNAPSHOT.jar
+
+
+Hello UAT Move with latest changes completed with following backend services has been updated
+UI build(UAT) #180
+ReportService build #24
+ForeignRecruiterService build #121
+RecruitingAgentService build #127
+EmigrantService build #113
+
+
+
+Hello I am starting UI build process -as part of it UAT will be updated with new UI changes and from backend only following services (ReportService, ForeignRecruiterService, RecruitingAgentService, EmigrantService) will be updated.
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+http://192.168.150.8:8080/job/EMigrate-AdministrationService/lastSuccessfulBuild/artifact/SvrJsbJarFdr/AdministrationService-0.0.1-SNAPSHOT.jar
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+30-Sept-2023
+
+-rwxrwxrwx  1 migration migration  74155457 Sep 29 19:01 NotificationService-0.0.1-SNAPSHOT.jar
+-rwxrwxrwx. 1 migration migration  44706499 Sep 29 19:00 AuthenticationService-0.0.1-SNAPSHOT.jar
+-rwxrwxrwx  1 root      root      112629468 Sep 29 17:13 EmigrantService-0.0.1-SNAPSHOT.jar
+-rwxrwxrwx  1 migration migration  78023417 Sep 29 15:57 AdministrationService-0.0.1-SNAPSHOT.jar
+-rwxrwxrwx  1 migration migration  78731178 Sep 29 15:55 RecruitingAgentService-0.0.1-SNAPSHOT.jar
+-rwxrwxrwx. 1 migration migration 135419575 Sep 29 13:36 ReportService-0.0.1-SNAPSHOT.jar
+-rwxrwxrwx  1 migration migration  77889695 Sep 29 13:32 GrievanceService-0.0.1-SNAPSHOT.jar
+-rwxrwxrwx  1 migration migration 127811068 Sep 29 13:01 ForeignRecruiterService-0.0.1-SNAPSHOT.jar
+-rw-r--r--  1 root      root       75224317 Sep 28 11:13 PaymentService-0.0.1-SNAPSHOT.jar
+
+
+
+Hello I am starting UI build process -as part of it UAT will be updated with new UI changes and from backend only following services (Payment Services, Report, Gateway, EC, RA, FE, Admin, Workflow, Grievance, Security, Authentication) will be updated. For backend - I will copy the servies from QA to UAT. if any concerns please let me know.
+
+Hello I am starting UI build process -as part of it UAT will be updated with new UI changes and from backend only following services(NotificationService, PaymentService, ReportService, EmigrantService, RecruitingAgentService, ForeignRecruiterService, AdministrationService, GrievanceService, AuthenticationService) will be updated.
+
+
+Hello UAT Move with latest UI changes completed with following backend services has been updated
+UI build #183
+UI CDN #3
+NotificationService build #10
+PaymentService build #6
+ReportService build #32
+EmigrantService build #122
+RecruitingAgentService build #136
+ForeignRecruiterService build #129
+AdministrationService build #74
+GrievanceService build #48
+AuthenticationService build #26
+
+Hello UAT move completed with following services updated and all services has been restarted
+ForeignRecruiterService build #131
+RecruitingAgentService build #137
+ReportService build #33
+
+
+

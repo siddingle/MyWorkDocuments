@@ -1,0 +1,289 @@
+Xamarin build on jenkins windows node-1
+
+Go to this website
+https://visualstudio.microsoft.com/downloads/
+Install it on windows node-1 by extracting it
+download visual studio 2022 bu selecting .net
+
+
+option 2
+same website below Build tools for visual studio 2022
+download it
+
+path on node-1
+C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Current\Bin
+
+
+
+
+
+
+
+https://learn.microsoft.com/en-us/troubleshoot/developer/visualstudio/installation/troubleshoot-network-related-errors?toc=%2Fvisualstudio%2Ftoc.json&view=vs-2022
+
+
+
+to apply signed certificate nothing but java.keystore file
+"C:\Program Files\Java\jdk-11.0.0.2\bin\jarsigner" -verbose -sigalg SHA256withRSA -digestalg SHA-256 -keystore "C:\Users\buildadmin\xamarin\StoreKey\emigrateapp.keystore" -storepass emigrate -keypass emigrate "C:\jenkins\workspace\Pipeline-MobileApp\Emigrate\Emigrate.Android\bin\Release\com.trigyn.emigrate.apk" emigrateapp
+
+
+
+to verify certificates are present or not
+"C:\path\to\android-sdk\build-tools\version\apksigner" verify --verbose --print-certs "C:\jenkins\workspace\Pipeline-MobileApp\Emigrate\Emigrate.Android\bin\com.trigyn.emigrate.apk"
+"C:\Program Files\Java\jdk-11.0.0.2\bin\jarsigner" -verify -verbose -certs "C:\jenkins\workspace\Pipeline-MobileApp\Emigrate\Emigrate.Android\bin\com.trigyn.emigrate.apk"
+
+
+
+to verify wether keystore file is supporting to your jdk version or not
+keytool -list -v -keystore C:/Users/buildadmin/Downloads/StoreKey/StoreKey/emigrateapp.keystore
+
+
+
+to verify apk is signed or not
+jarsigner -verify -verbose -certs C:\jenkins\workspace\EMigrate-Mobile\Emigrate\Emigrate.Android\bin\Release\com.trigyn.emigrate.apk
+
+jarsigner -verify -verbose -certs C:\jenkins\workspace\Pipeline-MobileApp\Emigrate\Emigrate.Android\bin\Release\com.trigyn.emigrate.apk
+- Signed by "OU="MEA, O=Ministry of External Affairs""
+    Digest algorithm: SHA-256
+    Signature algorithm: SHA256withRSA, 2048-bit key
+
+jar verified.
+
+Warning:
+This jar contains entries whose certificate chain is invalid. Reason: PKIX path building failed: sun.security.provider.certpath.SunCertPathBuilderException: unable to find valid certification path to requested target
+This jar contains entries whose signer certificate is self-signed.
+This jar contains signatures that do not include a timestamp. Without a timestamp, users may not be able to validate this jar after any of the signer certificates expire (as early as 2054-06-13).
+
+The signer certificate will expire on 2054-06-13.
+
+
+to sign the apk using jdk 1.8 (inside a bin path)
+
+"C:\Program Files\Java\jdk-1.8\bin\jarsigner" -sigalg SHA256withRSA -digestalg SHA-256 -keystore C:/Users/buildadmin/Downloads/StoreKey/StoreKey/emigrateapp.keystore  C:\jenkins\workspace\EMigrate-Mobile\Emigrate\Emigrate.Android\bin\Release\com.trigyn.emigrate.apk emigrateapp -storepass emigrate
+
+jarsigner -sigalg SHA256withRSA -digestalg SHA-256 -keystore C:/Users/buildadmin/Downloads/StoreKey/StoreKey/emigrateapp.keystore C:\jenkins\workspace\EMigrate-Mobile\Emigrate\Emigrate.Android\bin\Release\com.trigyn.emigrate.apk emigrateapp -storepass emigrate
+
+
+with a timestamp
+jarsigner -sigalg SHA256withRSA -digestalg SHA-256 -tsa http://timestamp.digicert.com -keystore C:/Users/buildadmin/Downloads/StoreKey/StoreKey/emigrateapp.keystore C:\jenkins\workspace\EMigrate-Mobile\Emigrate\Emigrate.Android\bin\Release\com.trigyn.emigrate.apk emigrateapp -storepass emigrate
+
+with timestamp for pipeline
+jarsigner -sigalg SHA256withRSA -digestalg SHA-256 -tsa http://timestamp.digicert.com -keystore C:/Users/buildadmin/Downloads/StoreKey/StoreKey/emigrateapp.keystore C:\jenkins\workspace\Pipeline-MobileApp\Emigrate\Emigrate.Android\bin\Release\com.trigyn.emigrate.apk emigrateapp -storepass emigrate
+
+keytool -importcert -trustcacerts -file path/to/rootCA.crt -alias rootCA_alias -keystore path/to/jdk/jre/lib/security/cacerts -storepass changeit
+
+
+
+
+
+
+
+
+
+jarsigner -verbose -sigalg MD5withRSA -digestalg SHA1 -keystore C:/Users/buildadmin/Downloads/StoreKey/StoreKey/emigrateapp.keystore -storepass emigrate -signedjar SIGNED.APK C:\jenkins\workspace\Pipeline-MobileApp\Emigrate\Emigrate.Android\bin\Release\com.trigyn.emigrate.apk emigrateapp
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+pipeline {
+    
+    agent { 
+        label "node-1"
+    }
+    environment {
+        ANDROID_KEYSTORE_PASSWORD = 'your_keystore_password_here'
+        ANDROID_KEY_PASSWORD = 'your_key_password_here'
+    }
+    stages {
+         
+           stage("Checkout SCM"){
+		   steps {
+		       cleanWs()
+		    
+		    echo "Cloning the code"
+	
+			  git branch: 'Emigrate_QA_sid',
+              credentialsId: '9d80c88d-fab2-4291-9e67-743882bb345c',
+              url: 'https://apps.trigyn.com/gitlab/emigrate/emigratemobile.git' 
+             
+              
+		   
+		   }
+		} 
+        
+        stage('Clean') {
+            steps {
+                script {
+                    // Clean the solution
+                    bat 'dotnet clean Emigrate/Emigrate.sln'
+                }
+            }
+        }
+        stage('Restore') {
+            steps {
+                script {
+                    // Restore the solution
+                   // bat 'dotnet restore Emigrate/Emigrate/Emigrate.csproj --configfile C:\\Users\\siddharth.ingle\\AppData\\Roaming\\NuGet\\nuget.config'
+                   bat 'dotnet restore Emigrate/Emigrate/Emigrate.csproj'
+                    
+                }
+            }
+        }
+        stage('Install NuGet Packages') {
+            steps {
+                script {
+                    // Install required NuGet packages
+                    bat 'dotnet add Emigrate/Emigrate.Android/Emigrate.Android.csproj package Xamarin.Android.Support.Design'
+                    bat 'dotnet add Emigrate/Emigrate.Android/Emigrate.Android.csproj package Xamarin.Android.Support.v4'
+                    bat 'dotnet add Emigrate/Emigrate.Android/Emigrate.Android.csproj package Xamarin.Android.Support.v7.AppCompat'
+                    bat 'dotnet add Emigrate/Emigrate.Android/Emigrate.Android.csproj package Xamarin.Android.Support.v7.CardView'
+                }
+            }
+        }
+        stage('Build') {
+            steps {
+                script {
+                    // Build the project
+                     bat 'dotnet build Emigrate/Emigrate/Emigrate.csproj -c Release'
+                
+                }
+            }
+        }
+        stage('Create APK') {
+            steps {
+                script {
+                    // Create the APK
+                    bat '\"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\MSBuild\\Current\\Bin\\msbuild\" Emigrate/Emigrate.Android/Emigrate.Android.csproj /t:PackageForAndroid /p:Configuration=Release'
+                }
+            }
+        }
+        stage('Sign APK') {
+            steps {
+                script {
+                    // Sign the APK using jarsigner (assuming JDK is installed)
+                   // bat 'jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore "C:\\Users\\buildadmin\\xamarin\\StoreKey\\emigrateapp.keystore" -storepass emigrate -keypass emigrate "C:\\jenkins\\workspace\\Pipeline-MobileApp\\Emigrate\\Emigrate.Android\\bin\\com.mea.emigrate.apk" emigrateapp'
+                    def javaHome = "C:\\Program Files\\Java\\jdk-11.0.0.2"
+                  //  def javaHome = "C:\\Program Files\\Java\\jdk-11"  
+                    def jarsignerPath = "${javaHome}\\bin\\jarsigner"
+                    def keystorePath = "C:\\Users\\buildadmin\\xamarin\\StoreKey\\emigrateapp.keystore"
+                    def storepass = "emigrate"
+                    def keypass = "emigrate"
+                    def alias = "emigrateapp"
+                    def apkPath = "C:\\jenkins\\workspace\\Pipeline-MobileApp\\Emigrate\\Emigrate.Android\\bin\\com.mea.emigrate.apk"
+                    
+                    // Java command to sign APK
+                    bat "\"${jarsignerPath}\" -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore \"${keystorePath}\" -storepass ${storepass} -keypass ${keypass} \"${apkPath}\" ${alias}"
+                    
+                }
+            }
+        }
+    
+    }
+    post {
+        always {
+            archiveArtifacts artifacts: 'Emigrate/Emigrate.Android/bin/Release/*.apk', allowEmptyArchive: true
+        }
+    } 
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+def msbuildCommand = "/p:Configuration=${env.CONFIGURATION};" +
+                                         "AndroidKeyStore=True;" +
+                                         "AndroidSigningKeyStore=${env.KEYSTORE_PATH};" +
+                                         "AndroidSigningStorePass=${env.STORE_PASS};" +
+                                         "AndroidSigningKeyAlias=${env.KEY_ALIAS};" +
+                                         "AndroidSigningKeyPass=${env.KEY_PASS} " +
+                                         "/t:SignAndroidPackage"
+                    // Build the project
+                     sh 'msbuild Emigrate/Emigrate/Emigrate.csproj ${msbuildCommand}'
+					 
+					
+
+
+def dotnetCommand = "dotnet build /path/to/your/project.csproj " +
+                                        "--configuration ${env.CONFIGURATION} " +
+                                        "/p:AndroidKeyStore=True " +
+                                        "/p:AndroidSigningKeyStore=${env.KEYSTORE_PATH} " +
+                                        "/p:AndroidSigningStorePass=${env.STORE_PASS} " +
+                                        "/p:AndroidSigningKeyAlias=${env.KEY_ALIAS} " +
+                                        "/p:AndroidSigningKeyPass=${env.KEY_PASS} " +
+                                        "/t:SignAndroidPackage"
+
+                    // Run the dotnet command
+                    sh "${dotnetCommand}"					
+
+
+
+
+
+
+
+
+
+
+
+
+
+/p:Configuration=Release;AndroidKeyStore=True;AndroidSigningKeyStore=C:/Users/buildadmin/Downloads/StoreKey/StoreKey/emigrateapp.keystore;AndroidSigningStorePass=emigrate;AndroidSigningKeyAlias=emigrateapp;AndroidSigningKeyPass=emigrate;JavaSdkDirectory="C:\Program Files\Java\jdk-11.0.0.2\bin"/t:PackageForAndroid
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

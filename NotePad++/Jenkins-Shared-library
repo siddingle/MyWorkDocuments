@@ -1,0 +1,370 @@
+emigrate.groovy
+
+
+def checkout(){
+	   git branch: '${ENVIRONMENT}',
+     credentialsId: '692bbda9-3741-4662-8371-92df1ccfcac3',
+     url: 'https://apps.trigyn.com/gitlab/emigrate/emigratebackend.git'
+
+
+def build() {
+	
+     sh "mvn -f ${SERVICE_NAME}/pom.xml clean install -DskipTests"
+			   
+    }
+	
+def codeQualityAnalysis() {
+   
+     withCredentials([string(credentialsId: 'emigrate-sonar-qube-token', variable: 'SONAR_TOKEN')]) {
+     withSonarQubeEnv('Trigyn-sonar-qube-instance') {
+                     //   sh "mvn -f ${ServiceName}/pom.xml clean install -DskipTests sonar:sonar -Dsonar.login=${SONAR_TOKEN}"
+          sh '''            
+            mvn -f ${SERVICE_NAME}/pom.xml sonar:sonar \
+            -Dsonar.login=${SONAR_TOKEN}
+			
+            '''
+                    }
+         }  
+   }
+   
+def archieveArtifacts() {
+   
+     archiveArtifacts artifacts: 'SvrJsbJarFdr/*.jar', fingerprint: true   
+   
+   }
+   
+def pushToNexus() {
+   
+     nexusArtifactUploader artifacts: [[artifactId: '${SERVICE_NAME}', classifier: '${BUILD_NUMBER}', file: '${JENKINS_HOME}/jobs/${JOB_NAME}/builds/${BUILD_NUMBER}/archive/SvrJsbJarFdr/${SERVICE_NAME}-0.0.1-SNAPSHOT.jar', type: 'jar']], credentialsId: '70f0d661-f381-460a-b18a-cffaa01ad2bc', groupId: 'com.gov.emigrate.master', nexusUrl: '${NEXUS_URL}', nexusVersion: 'nexus3', protocol: 'http', repository: 'emigrate-services-snapshot-repo', version: '0.0.1-SNAPSHOT'    
+
+   }
+   
+def dockerImagePushToNexus() {
+   
+       def serviceName = env.SERVICE_NAME
+       def lowerServiceName = serviceName.toLowerCase()
+                         
+                      //   println "Original Service Name: ${SERVICE_NAME}"
+                      //  println "Lowercase Service Name: ${lowerServiceName}"
+					  
+					  if ("${SERVICE_NAME}" == 'GatewayService') {
+                        sh    "cp ${SERVICE_NAME}/src/main/resources/application_UAT.properties ${SERVICE_NAME}/"
+						
+                        }  
+
+                        sh """
+                           echo "Creating an Docker Image"
+                           cp services_UAT.properties ${SERVICE_NAME}/
+                          #cp SvrJsbJarFdr/*.jar ${SERVICE_NAME}/
+                           cd ${SERVICE_NAME}
+                           cp target/*.jar .
+                          #mv services_K8S.properties  services_UAT.properties
+                           docker build -f ./Dockerfile  -t ${lowerServiceName}:${BUILD_NUMBER} --build-arg ENVIRONMENT=UAT ./ || exit 1;
+                           docker tag ${lowerServiceName}:${BUILD_NUMBER} ${HTTP_PROXY_NEXUS_HOST}/${lowerServiceName}:${BUILD_NUMBER}
+                           docker push ${HTTP_PROXY_NEXUS_HOST}/${lowerServiceName}:${BUILD_NUMBER}
+                           docker rmi -f ${HTTP_PROXY_NEXUS_HOST}/${lowerServiceName}:${BUILD_NUMBER}
+                           docker rmi -f ${lowerServiceName}:${BUILD_NUMBER}
+                          
+                      
+                        """
+   
+   }
+   
+def deploymentToKuberentes() {
+   
+       def serviceName = env.SERVICE_NAME
+       def lowerServiceName = serviceName.toLowerCase()
+                        
+                   withCredentials([file(credentialsId: 'emigrate_kube_configfile', variable: 'KUBECONFIG')]) {
+                sh """
+                kubectl get nodes -o wide
+                kubectl get pod -A
+                
+                #kubectl apply -f ${lowerServiceName}-deployment.yml
+                """
+                   }
+   
+   }
+   
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Jenkinsfile
+
+
+
+pipeline {
+    
+    agent {
+        label ${AGENT}
+    }
+    
+    tools {
+        maven "Maven 363"
+    }
+    
+    stages {
+    
+        stage('Build') {
+            steps {
+			 echo "Build process started"
+             emigrate ('Build')
+            }
+        }
+        
+        stage('SonarQube-Code Analysis') {
+            steps {
+			 echo "Code Analysis started with Sonarqube"
+             emigrate ('codeQualityAnalysis')
+            }
+        }
+        
+
+        
+        stage('Docker Image and Push to Nexus') {
+            steps {
+              echo "Creating an Docker Image and Pushing to Nexus Repository"
+              emigrate ('dockerImagePushToNexus')       
+               }
+             
+        }
+                    
+        
+        
+        stage('Deployment to K8S') {
+            steps {
+              echo "Deployment process started"      
+              emigrate ('deploymentToKuberentes')
+                }
+            }
+            
+    }
+
+    post {
+        success {
+            echo 'Pipeline succeeded'
+        }
+        failure {
+            echo 'Pipeline failed'
+        }
+    }
+}
+        
+       
+        
+        
+        
+      
+
+
+
+
+
+COPY ${LOGSTASH_XML}.xml                ${WORK_DIR}/${LOGSTASH_XML}.xml
+${WORK_DIR}/${LOGSTASH_XML}.xml    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+pipeline {
+      agent any
+       tools {
+        // Define Node.js installation
+        nodejs 'NodeJS 16.17.0'
+    }
+      environment {
+        NODE_VERSION = '16.17.0'
+    }
+	 
+	  
+     stages{
+         
+	    stage("Code"){
+		   steps {
+		       
+		    echo "Cloning the code"
+			  git branch: '${BRANCH_NAME}',
+              credentialsId: '3a80fdd9-2005-4d60-a3e2-7f7c195c9f76',
+              url: 'https://apps.trigyn.com/gitlab/emigrate/emigrate.git'
+             // url: 'https://apps.trigyn.com/gitlab/emigrate/emigratecdn.git'
+		   
+		   }
+		}
+		stage('Getting packages') {
+            steps {
+                script {
+                    // Set npmrc file
+                    def npmrcContent = """
+                        registry=https://registry.npmjs.org/
+                        // Specify any other npm configuration here
+                    """
+                    writeFile file: '.npmrc', text: npmrcContent
+
+                  
+                }
+                    echo "Installing dependencies"
+		            sh "npm install --force"
+		            sh "npm run package" 
+            }
+        }
+		
+		stage("Build"){
+		   steps {
+		    //echo "Installing dependencies"
+		    // sh "npm install"
+		    // sh "npm run package" 
+		    // sh "npm run build:uat"
+		    
+		    script {
+		    if ("${ENVIRONMENT}" == 'DOCKER-DEV') {
+            sh  "npm run build:dockerdev -- --base-href /emigrateSIT/ --deploy-url /emigrateSIT/" 
+            }
+            else if ("${ENVIRONMENT}" == 'UAT') {
+            sh  "npm run build:clientUat -- --base-href /emigrateUAT/ --deploy-url /emigrateUAT/" 
+            }
+            else if ("${ENVIRONMENT}" == 'DATA-MIGRATION') {
+            sh "npm run build:dm -- --base-href / --deploy-url /"
+           }
+            else if ("${ENVIRONMENT}" == 'DOCKER-KUBE') {
+            sh "npm run build:dkub"
+           }
+            else if ("${ENVIRONMENT}" == 'UATK8SPROD') {
+            sh "npm run build:uat"
+           }
+           else if ("${ENVIRONMENT}" == 'PROD') {
+            sh "npm run build:prodlive"
+           }
+           
+		    }
+		    
+		   }		
+		}
+		
+		
+		stage('Zip Directory') {
+          steps {
+             script {
+                 sh "rm -rf *.zip"
+                dir('dist/') {
+                sh "zip -r ../e-migrate-${ENVIRONMENT}.zip ./e-migrate"
+            }
+           }
+         }
+        }
+		
+	    stage("Archive Artifacts"){
+	        steps {
+	            echo "Archiving Artifacts"
+	            archiveArtifacts artifacts: '*.zip', onlyIfSuccessful: true, fingerprint: true, followSymlinks: false
+	        }
+	    }	
+		
+	
+		stage("Upload Artifacts Nexus"){
+		   steps {
+		    echo "${BUILD_NUMBER}"
+		    echo "uploading artifacts to nexus"
+		    nexusArtifactUploader artifacts: [[artifactId: 'e-migrate-${ENVIRONMENT}', classifier: '${BUILD_NUMBER}', file: '${JENKINS_HOME}/jobs/${JOB_NAME}/builds/${BUILD_NUMBER}/archive/e-migrate-${ENVIRONMENT}.zip', type: 'zip']], credentialsId: '70f0d661-f381-460a-b18a-cffaa01ad2bc', groupId: 'in.gov.emigrate', nexusUrl: '${NEXUS_URL}', nexusVersion: 'nexus3', protocol: 'http', repository: 'emigrate-services-release-repo', version: 'Release'
+		   
+		   }
+		}
+		
+		stage("Deployment to the server"){
+		 steps {
+		     script {
+		         echo "Deployment"
+                def commands = """
+                    echo "${BUILD_NUMBER}"
+                    cd /var/www/newbuild/
+                    sh copyEmigrateUI.sh ${BUILD_NUMBER}
+            """
+		         
+                 
+                    
+               echo "Running Script on NODE1"
+               sh "ssh -t root@192.168.150.22 '$commands'"
+		     }
+		 }
+		}
+		
+		stage("Docker Image"){
+		   steps {
+		    echo "${BUILD_NUMBER}"
+		    echo ""
+		    
+		   }
+		}
+		
+		
+	 } 
+}    

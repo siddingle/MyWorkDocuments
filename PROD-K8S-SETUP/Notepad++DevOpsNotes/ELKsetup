@@ -1,0 +1,674 @@
+ELK
+to check UTC time
+date -d @creation date of ELK indices
+date -u
+IMp 
+cd /usr/share/elasticsearch/bin/
+ ./elasticsearch-setup-passwords interactive
+ 
+curl -u elastic:Meeting#4321 -X GET "http://localhost:9200/"
+
+curl -u elastic:Meeting#4321 -X GET "http://172.16.100.20:9200/_cat/indices?v"
+curl -X GET "localhost:9200/_cat/indices?v"
+
+
+to run log using logstach.conf
+ /usr/share/logstash/bin/logstash -f /etc/logstash/conf.d/logstach.conf
+ 
+lsof -i -P -n | grep LISTEN
+cd /usr/share/elasticsearch/bin/ 
+./elasticsearch-setup-passwords interactive
+ 
+Changed password for user [apm_system]
+Changed password for user [kibana_system]
+Changed password for user [kibana]
+Changed password for user [logstash_system]
+Changed password for user [beats_system]
+Changed password for user [remote_monitoring_user]
+Changed password for user [elastic]
+
+elastic
+Meeting#4321
+
+
+elasticsearch
+ netstat -anp | grep LISTEN | grep tcp
+
+
+https://forum.uipath.com/t/enable-basic-authentication-on-elasticsearch-and-kibana/410484
+wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-8.11.3-x86_64.rpm
+sudo rpm --install elasticsearch-8.11.3-x86_64.rpm
+
+
+Creating elasticsearch group... OK
+Creating elasticsearch user... OK
+--------------------------- Security autoconfiguration information ------------------------------
+
+Skipping auto-configuration because security features appear to be already configured.
+
+-------------------------------------------------------------------------------------------------
+### NOT starting on installation, please execute the following statements to configure elasticsearch service to start automatically using systemd
+ sudo systemctl daemon-reload
+ sudo systemctl enable elasticsearch.service
+### You can start elasticsearch service by executing
+ sudo systemctl start elasticsearch.service
+/usr/lib/tmpfiles.d/elasticsearch.conf:1: Line references path below legacy directory /var/run/, updating /var/run/elasticsearch → /run/elasticsearch; please update the tmpfiles.d/ drop-in file accordingly.
+
+
+
+
+Kibana
+
+wget https://artifacts.elastic.co/downloads/kibana/kibana-8.11.3-x86_64.rpm
+sudo rpm --install kibana-8.11.3-x86_64.rpm
+
+Creating kibana group... OK
+Creating kibana user... OK
+/usr/lib/tmpfiles.d/elasticsearch.conf:1: Line references path below legacy directory /var/run/, updating /var/run/elasticsearch → /run/elasticsearch; please update the tmpfiles.d/ drop-in file accordingly.
+
+
+
+logstash
+
+
+sudo rpm --import https://artifacts.elastic.co/GPG-KEY-elasticsearch
+
+[logstash-8.x]
+name=Elastic repository for 8.x packages
+baseurl=https://artifacts.elastic.co/packages/8.x/yum
+gpgcheck=1
+gpgkey=https://artifacts.elastic.co/GPG-KEY-elasticsearch
+enabled=1
+autorefresh=1
+type=rpm-md
+
+sudo yum install logstash
+sudo systemctl start logstash.service
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+mount directory
+/emigrate/logConfig
+
+
+
+java -Dlogback.configurationFile=/emigrate/logConfig/adminServiceLogConfig.xml -jar AdministrationService-0.0.1-SNAPSHOT.jar
+
+-Dlogback.configurationFile=/emigrate/logConfig/adminServiceLogConfig.xml
+
+
+
+
+input {
+
+tcp {
+port => 10514
+codec => "json"
+type => "rsyslog"
+}
+}
+
+Here is the output:
+output {
+elasticsearch {
+hosts => ["localhost:9200"]
+sniffing => true
+manage_template => false
+index => "%{[@metadata][beat]}-%{+YYYY.MM.dd}"
+document_type => "%{[@metadata][type]}"
+}
+if [type] == "rsyslog" {
+elasticsearch {
+hosts => [ "localhost:9200" ]
+}
+}
+}
+
+
+
+
+
+
+Once logstash elasticsearch kibana giving error with systemd and not creating log as well
+sudo mkdir /var/log/kibana
+sudo mkdir /var/log/logstash
+sudo mkdir /var/log/elasticsearch
+
+sudo chown -R kibana:kibana /var/log/kibana
+sudo chmod -R 755 /var/log/kibana
+
+sudo chown -R elasticsearch:elasticsearch /var/log/elasticsearch
+sudo chmod -R 755 /var/log/elasticsearch
+
+sudo chown -R logstash:logstash /var/log/logstash
+sudo chmod -R 755 /var/log/logstash
+
+logstash was stopping with an error
+
+Logstash stopped processing because of an error: (LoadError) Could not load FFI Provider: (NotImplementedError) FFI not available: null
+
+solution
+given 777 permission to /tmp
+
+
+
+
+Upgrading ELK 
+downloaded RPM packages inside for all /workspace/ELK-8.12.2/
+stop all the running services of ELK 
+systemctl stop elasticsearch
+systemctl stop logstash
+systemctl stop kibana
+
+rpm -Uvh elasticsearch-8.12.2-x86_64.rpm
+rpm -Uvh logstash-8.12.2-x86_64.rpm
+rpm -Uvh kibana-8.12.2-x86_64.rpm
+
+elasticsearch version can be verified running below command
+curl -u elastic:Meeting#4321 -X GET "http://localhost:9200/"
+
+kibana version can be verfied on browser kibana dashboard
+
+logstash conf with two ports 
+/etc/logstash/conf.d/logstach.conf
+
+input {
+  tcp {
+    port => 5045
+    codec => json
+    type => "userActivity"
+  }
+  tcp {
+    port => 5044
+    codec => json
+    type => "generic"
+  }
+
+}
+
+ output {
+   if [type] == "userActivity" {
+  elasticsearch {
+    hosts => ["localhost:9200"]
+    user => "elastic"
+    password => "Meeting#4321"
+    #index => "socket-server-%{+YYYY.MM.dd}"
+    index => "user-activity-%{+YYYY.MM.dd}"
+  }
+}
+  if [type] == "generic" {
+  elasticsearch {
+    hosts => ["localhost:9200"]
+    user => "elastic"
+    password => "Meeting#4321"
+    index => "socket-server-%{+YYYY.MM.dd}"
+
+  }
+}
+}
+
+
+
+NodeJS version upgrade in kibana
+Run the below shell file
+
+patch is required 
+yum install patch
+
+
+#!/bin/bash
+NODE_VERSION=v18.19.1
+cd /tmp/
+wget --no-clobber https://nodejs.org/download/release/${NODE_VERSION}/node-${NODE_VERSION}-linux-x64.tar.xz
+sudo systemctl stop kibana
+tar -xvf node-${NODE_VERSION}-linux-x64.tar.xz --strip-components=1 \
+    --overwrite \
+    --directory /usr/share/kibana/node/
+
+cat <<EOF | tee /tmp/node_version_validator.js.patch
+--- /usr/share/kibana/src/setup_node_env/node_version_validator.js      2023-08-31 11:23:41.000000000 +0000
++++ /tmp/node_version_validator.js      2023-09-06 23:28:58.632477706 +0000
+@@ -22,6 +22,6 @@
+   var errorMessage = 'Kibana does not support the current Node.js version ' + currentVersion + '. Please use Node.js ' + requiredVersion + '.';
+
+   // Actions to apply when validation fails: error report + exit.
+-  console.error(errorMessage);
+-  process.exit(1);
+-}
+\ No newline at end of file
++  //console.error(errorMessage);
++  //process.exit(1);
++}
+EOF
+
+cd /usr/share/kibana/src/setup_node_env
+sudo patch < /tmp/node_version_validator.js.patch
+sudo systemctl restart kibana
+
+
+
+ELK LifeCycle Policy
+
+PUT _ilm/policy/emigrate_logs_policy
+{
+  "policy": {
+    "phases": {
+      "hot": {
+        "min_age": "0ms",
+        "actions": {
+          "set_priority": {
+            "priority": 100
+          },
+          "rollover": {
+            "max_age": "10d"
+          }
+        }
+      },
+      "delete": {
+        "min_age": "10d",
+        "actions": {
+          "delete": {}
+        }
+      }
+    }
+  }
+}
+
+
+ELK LifeCycle policy with warm phase
+
+PUT _ilm/policy/emigrate_logs_policy
+{
+  "policy": {
+    "phases": {
+      "hot": {
+        "min_age": "0ms",
+        "actions": {
+          "set_priority": {
+            "priority": 100
+          }
+        }
+      },
+      "warm": {
+        "min_age": "8d",
+        "actions": {
+          "set_priority": {
+            "priority": 50
+          }
+        }
+      },
+      "delete": {
+        "min_age": "10d",
+        "actions": {
+          "delete": {
+            "delete_searchable_snapshot": true
+          }
+        }
+      }
+    }
+  }
+}
+
+
+
+
+
+Intex template created 
+emigrate_logs_policy
+
+
+PUT _index_template/emigrate_logs_policy
+{
+  "template": {
+    "settings": {
+      "index": {
+        "lifecycle": {
+          "name": "emigrate_logs_policy",
+          "rollover_alias": "EmigrateLogs"
+        },
+        "number_of_shards": "1",
+        "auto_expand_replicas": "0-1",
+        "number_of_replicas": "0"
+      }
+    }
+  },
+  "index_patterns": [
+    "socket-server-*"
+  ],
+  "composed_of": [],
+  "allow_auto_create": true
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ELK CLuster Setup
+
+Master Server changes EMA-KubernetesVM04
+
+rpm --install elasticsearch-8.12.2-x86_64.rpm
+
+cd /etc/elasticsearch 
+configured changes for cluster
+vi elasticsearch.yml
+
+set the jvm heap size
+cluster.name: emigrate
+node.name: node-1
+network.host: 192.168.150.19
+http.port: 9200
+to disabled ssl communication
+keep true initially
+later you can disabled to false
+xpack.security.http.ssl:
+  enabled: true
+  keystore.path: certs/http.p12
+
+
+
+systemctl daemon-reload
+systemctl enable elasticsearch
+systemctl start elasticsearch
+
+cd /usr/share/elastcisearch/bin/
+./elasticsearch-reset-password -i -u elastic
+curl -k -u elastic:Meeting#4321 https://localhost:9200
+ouput
+{
+  "name" : "node-1",
+  "cluster_name" : "emigrate",
+  "cluster_uuid" : "Hd7lgViFSEazm7rbBEHTYg",
+  "version" : {
+    "number" : "8.12.2",
+    "build_flavor" : "default",
+    "build_type" : "rpm",
+    "build_hash" : "48a287ab9497e852de30327444b0809e55d46466",
+    "build_date" : "2024-02-19T10:04:32.774273190Z",
+    "build_snapshot" : false,
+    "lucene_version" : "9.9.2",
+    "minimum_wire_compatibility_version" : "7.17.0",
+    "minimum_index_compatibility_version" : "7.0.0"
+  },
+  "tagline" : "You Know, for Search"
+}
+
+
+curl  -u elastic:Meeting#4321 http://localhost:9200/_cluster/health?pretty
+output
+{
+  "cluster_name" : "emigrate",
+  "status" : "green",
+  "timed_out" : false,
+  "number_of_nodes" : 1,
+  "number_of_data_nodes" : 1,
+  "active_primary_shards" : 1,
+  "active_shards" : 1,
+  "relocating_shards" : 0,
+  "initializing_shards" : 0,
+  "unassigned_shards" : 0,
+  "delayed_unassigned_shards" : 0,
+  "number_of_pending_tasks" : 0,
+  "number_of_in_flight_fetch" : 0,
+  "task_max_waiting_in_queue_millis" : 0,
+  "active_shards_percent_as_number" : 100.0
+}
+
+./elasticsearch-create-enrollment-token -s node
+eyJ2ZXIiOiI4LjEyLjIiLCJhZHIiOlsiMTkyLjE2OC4xNTAuMTk6OTIwMCJdLCJmZ3IiOiJkODAyMWFlYzgwZjI4NGNjMDM2NjdjYTU3ODBhZWU4ZDJhMDE2YTg2MWJlNGUwYmUyMWZhZWZiNzBmNmI3NjhlIiwia2V5Ijoib2VwMDA0NEI1RURlTU45bFpNZFY6NGlHeXFOWUxUN09GRHBOenBlaXRZQSJ9
+
+
+
+
+Worker Node-1
+rpm --install elasticsearch-8.12.2-x86_64.rpm
+cd /usr/share/elasticsearch/bin/
+./elasticsearch-reconfigure-node --enrollment-token eyJ2ZXIiOiI4LjEyLjIiLCJhZHIiOlsiMTkyLjE2OC4xNTAuMTk6OTIwMCJdLCJmZ3IiOiJkODAyMWFlYzgwZjI4NGNjMDM2NjdjYTU3ODBhZWU4ZDJhMDE2YTg2MWJlNGUwYmUyMWZhZWZiNzBmNmI3NjhlIiwia2V5Ijoib2VwMDA0NEI1RURlTU45bFpNZFY6NGlHeXFOWUxUN09GRHBOenBlaXRZQSJ9
+
+vi /etc/elasticsearch
+set the jvm heap size
+cluster.name: emigrate
+node.name: node-2
+network.host: 192.168.170.6
+http.port: 9200
+systemctl daemon-reload
+systemctl enable elasticsearch.service
+systemctl start elasticsearch.service
+systemctl status elasticsearch.service
+
+
+Worker Node-2
+rpm --install elasticsearch-8.12.2-x86_64.rpm
+cd /usr/share/elasticsearch/bin/
+./elasticsearch-reconfigure-node --enrollment-token eyJ2ZXIiOiI4LjEyLjIiLCJhZHIiOlsiMTkyLjE2OC4xNTAuMTk6OTIwMCJdLCJmZ3IiOiJkODAyMWFlYzgwZjI4NGNjMDM2NjdjYTU3ODBhZWU4ZDJhMDE2YTg2MWJlNGUwYmUyMWZhZWZiNzBmNmI3NjhlIiwia2V5Ijoib2VwMDA0NEI1RURlTU45bFpNZFY6NGlHeXFOWUxUN09GRHBOenBlaXRZQSJ9
+
+vi /etc/elasticsearch
+set the jvm heap size
+cluster.name: emigrate
+node.name: node-3
+network.host: 192.168.150.40
+http.port: 9200
+systemctl daemon-reload
+systemctl enable elasticsearch.service
+systemctl start elasticsearch.service
+systemctl status elasticsearch.service
+
+
+
+
+for Master and Worker Node
+vi /etc/elasticsearch/elasticsearch.yml
+
+xpack.security.http.ssl:
+  enabled: false
+  keystore.path: certs/http.p12 
+
+Logstash Installtion
+for worker and master node
+rpm --install logstash-8.12.2-x86_64.rpm
+vi /etc/logstash/logstash.yml
+configured the port and ip only
+api.http.host: 127.0.0.1
+api.http.port: 9601
+
+configured logstash.conf file in conf.d from master
+
+input {
+  tcp {
+    port => 5045
+    codec => json
+    type => "userActivity"
+  }
+  tcp {
+    port => 5044
+    codec => json
+    type => "generic"
+  }
+
+}
+
+ output {
+   if [type] == "userActivity" {
+  elasticsearch {
+    hosts => ["http://localhost:9200","http://192.168.170.6:9200","http://192.168.150.40:9200"]
+   # ssl => true
+   # ssl_certificate_verification => false
+    user => "elastic"
+    password => "Meeting#4321"
+    #index => "socket-server-%{+YYYY.MM.dd}"
+    index => "user-activity-%{+YYYY.MM.dd}"
+  }
+}
+  if [type] == "generic" {
+  elasticsearch {
+    hosts => ["http://localhost:9200","http://192.168.170.6:9200","http://192.168.150.40:9200"]
+ #  ssl => true
+ #  ssl_certificate_verification => false
+    user => "elastic"
+    password => "Meeting#4321"
+    index => "socket-server-%{+YYYY.MM.dd}"
+
+  }
+}
+}
+
+
+and started logstash service
+
+systemctl enable logstash
+systemctl start logstash
+define java heap size
+
+
+Kibana Installation
+
+
+rpm --install kibana-8.12.2-x86_64.rpm
+vi kibana.yml
+server.port: 5601
+server.host: "0.0.0.0"
+elasticsearch.hosts:
+ - http://192.168.150.19:9200
+ - http://192.168.170.6:9200
+ - http://192.168.150.40:9200
+ reset password for kibana_system 
+./usr/share/elastcisearch/bin/elasticsearch-reset-password -u kibana_system
+ 
+elasticsearch.username: "kibana_system"     It always has to be kibana system 
+elasticsearch.password: "Meeting#4321"
+
+
+ 
+ 
+Verify on dev tool of kibana
+
+GET /_cat/shards/socket-server-2024.04.15
+GET /_cat/shards/socket-server-2024.05.02
+GET /_cat/nodes
+GET /_cat/indices/sock*
+GET /_cat/master
+GET /_cat/shards/metrics-endpoint.metadata_current*
+
+
+
+
+
+
+
+SNAPSHOT REPOSITORY FOR ELK
+https://www.youtube.com/watch?v=9rTkFha1qxA
+
+
+
+
+
+Error
+Can't store an async search response larger than [10485760] bytes. This limit can be set by changing the [search.max_async_search_response_size] setting.
+
+Solution
+Used on ELK server
+curl -u elastic:Meeting#4321 -X PUT "http://localhost:9200/_cluster/settings" -H "Content-Type: application/json" -d "{\"persistent\": { \"search.max_async_search_response_size\": \"50mb\"}}"
+
+
+PUT _cluster/settings -d '{
+  "persistent": {
+    "search.max_async_search_response_size":"50mb"
+  }
+}'
+
+
+
+In logback.xml file
+<destination>192.168.150.19:5044</destination>
+<destination>192.168.170.6:5044</destination>
+
+
+
+
+
+
+
+

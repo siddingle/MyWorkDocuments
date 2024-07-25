@@ -1,0 +1,260 @@
+Document server not able to docker push
+EReport unable to push to nexus as not push to docker
+to run the jenkins server which is workspace
+check space consumption on linux
+du -h --max-depth=1 /path/to/directory | sort -rh | head -n 10
+nohup java -jar jenkins.war -> logs/jenkins.out &
+
+nohup java -jar jenkins.war > logs/jenkins.out 2>&1 &
+
+for 210 server
+nohup java -jar jenkins.war --prefix=/jenkins2 -> logs/jenkins.out &
+
+Nexus push Artifacts directory
+/root/.jenkins/jobs/EMigrate-EReportService/builds/7/archive/SvrJsbJarFdr
+${JENKINS_HOME}/jobs/EMigrate-${ServiceName}/builds/${BuildId}/archive/SvrJsbJarFdr/${ServiceName}-0.0.1-SNAPSHOT.jar
+-----------------------------------------------------------------------------------------------------------------------------
+EReportService/target/EReportService-*.jar
+SvrJsbJarFdr/AdministrationService-*.jar
+SvrJsbJarFdr/EReportService-*.jar
+
+docker pull 192.168.150.8:9081/nexus/administrationservice:58
+
+-------------------------------------------------------------------------------------------------------------------------------
+UAT changes Service_QA.properties
+
+EMIGRANT_SERVICE_OTP_NOTIFICATION_URL=http://192.168.102.55:8086
+
+nohup java -jar GatewayService-0.0.1-SNAPSHOT.jar --spring.config.location=application_m.properties  --spring.config.additional-location=services_QA.properties -> startup-logs/Gateway.out &
+
+
+
+curl http://192.168.150.8:8080/jenkins2/job/EMigrate-AdministrationService/57/artifact/SvrJsbJarFdr/AdministrationService-0.0.1-SNAPSHOT.jar --output AdministrationService-0.0.1-SNAPSHOT.jar
+
+
+
+Jenkins UI Pipeline-Emigrate
+
+pipeline {
+      agent any
+       tools {
+        // Define Node.js installation
+        nodejs 'NodeJS 16.17.0'
+    }
+      environment {
+        NODE_VERSION = '16.17.0'
+    }
+	 
+	  
+     stages{
+         
+	    stage("Code"){
+		   steps {
+		    echo "Cloning the code"
+			  git branch: '${BRANCH_NAME}',
+              credentialsId: '3a80fdd9-2005-4d60-a3e2-7f7c195c9f76',
+              url: 'https://apps.trigyn.com/gitlab/emigrate/emigrate.git'
+             // url: 'https://apps.trigyn.com/gitlab/emigrate/emigratecdn.git'
+		   
+		   }
+		}
+		stage('Getting packages') {
+            steps {
+                script {
+                    // Set npmrc file
+                    def npmrcContent = """
+                        registry=https://registry.npmjs.org/
+                        // Specify any other npm configuration here
+                    """
+                    writeFile file: '.npmrc', text: npmrcContent
+
+                  
+                }
+            }
+        }
+		
+		stage("Installation,run,Build"){
+		   steps {
+		    echo "Installing dependencies"
+		     sh "npm install"
+		     sh "npm run package" 
+		     sh "npm run build:uat"
+		   }		
+		}
+	    stage("Archive Artifacts"){
+	        steps {
+	            echo "Archiving Artifacts"
+	            sh "rm -rf e-migrate-PROD.zip "
+	            sh "zip e-migrate-PROD.zip -r ./dist/e-migrate"
+	            archiveArtifacts artifacts: '*.zip', onlyIfSuccessful: true, fingerprint: true, followSymlinks: false
+	        }
+	    }	
+		
+	
+		stage("Upload Artifacts Nexus"){
+		   steps {
+		    echo "${BUILD_NUMBER}"
+		    echo "uploading artifacts to nexus"
+		    nexusArtifactUploader artifacts: [[artifactId: 'e-migrate-prod', classifier: '${BUILD_NUMBER}', file: '${JENKINS_HOME}/jobs/Pipeline-Emigrate/builds/${BUILD_NUMBER}/archive/e-migrate-PROD.zip', type: 'zip']], credentialsId: '70f0d661-f381-460a-b18a-cffaa01ad2bc', groupId: 'com.gov.emigrate', nexusUrl: '${NEXUS_URL}', nexusVersion: 'nexus3', protocol: 'http', repository: 'emigrate-services-release-repo', version: 'Release'
+		   
+		   }
+		}
+		
+		stage("Docker Image"){
+		   steps {
+		    echo "${BUILD_NUMBER}"
+		    echo ""
+		    
+		   }
+		}
+		
+		
+	 } 
+}
+
+
+Parameterized Jenkins Pipeline-Emigrate
+
+pipeline {
+      agent any
+       tools {
+        // Define Node.js installation
+        nodejs 'NodeJS 16.17.0'
+    }
+      environment {
+        NODE_VERSION = '16.17.0'
+    }
+	 
+	  
+     stages{
+         
+	    stage("Code"){
+		   steps {
+		    echo "Cloning the code"
+			  git branch: '${BRANCH_NAME}',
+              credentialsId: '3a80fdd9-2005-4d60-a3e2-7f7c195c9f76',
+              url: 'https://apps.trigyn.com/gitlab/emigrate/emigrate.git'
+             // url: 'https://apps.trigyn.com/gitlab/emigrate/emigratecdn.git'
+		   
+		   }
+		}
+		stage('Getting packages') {
+            steps {
+                script {
+                    // Set npmrc file
+                    def npmrcContent = """
+                        registry=https://registry.npmjs.org/
+                        // Specify any other npm configuration here
+                    """
+                    writeFile file: '.npmrc', text: npmrcContent
+
+                  
+                }
+            }
+        }
+		
+		stage("Installation,run,Build"){
+		   steps {
+		    echo "Installing dependencies"
+		     sh "npm install"
+		     sh "npm run package" 
+		    // sh "npm run build:uat"
+		    
+		    script {
+		    if ("${ENVIRONMENT}" == 'DOCKER-DEV') {
+            sh  "npm run build:dockerdev -- --base-href /emigrateSIT/ --deploy-url /emigrateSIT/" 
+            }
+            else if ("${ENVIRONMENT}" == 'DATA-MIGRATION') {
+            sh "npm run build:dm -- --base-href /emigrateUAT/ --deploy-url /emigrateUAT/" 
+           }
+            else if ("${ENVIRONMENT}" == 'DOCKER-KUBE') {
+            sh "npm run build:dkub"
+           }
+            else if ("${ENVIRONMENT}" == 'UATK8SPROD') {
+            sh "npm run build:uat"
+           }
+           
+		    }
+		    
+		   }		
+		}
+		
+		
+		
+		
+		
+	    stage("Archive Artifacts"){
+	        steps {
+	            echo "Archiving Artifacts"
+	            sh "rm -rf e-migrate-*.zip "
+	            sh "zip e-migrate-${ENVIRONMENT}.zip -r ./dist/e-migrate"
+	            archiveArtifacts artifacts: '*.zip', onlyIfSuccessful: true, fingerprint: true, followSymlinks: false
+	        }
+	    }	
+		
+	
+		stage("Upload Artifacts Nexus"){
+		   steps {
+		    echo "${BUILD_NUMBER}"
+		    echo "uploading artifacts to nexus"
+		    nexusArtifactUploader artifacts: [[artifactId: 'e-migrate-${ENVIRONMENT}', classifier: '${BUILD_NUMBER}', file: '${JENKINS_HOME}/jobs/Pipeline-Emigrate/builds/${BUILD_NUMBER}/archive/e-migrate-${ENVIRONMENT}.zip', type: 'zip']], credentialsId: '70f0d661-f381-460a-b18a-cffaa01ad2bc', groupId: 'com.gov.emigrate', nexusUrl: '${NEXUS_URL}', nexusVersion: 'nexus3', protocol: 'http', repository: 'emigrate-services-release-repo', version: 'Release'
+		   
+		   }
+		}
+		
+		stage("Docker Image"){
+		   steps {
+		    echo "${BUILD_NUMBER}"
+		    echo ""
+		    
+		   }
+		}
+		
+		
+	 } 
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+clear caches
+sudo sh -c 'echo 1 > /proc/sys/vm/drop_caches'
+sync
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

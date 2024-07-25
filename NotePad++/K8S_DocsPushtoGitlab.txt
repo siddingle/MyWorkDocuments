@@ -1,0 +1,91 @@
+cloning onto D:\K8S_bacup
+git clone https://apps.trigyn.com/gitlab/emigrate/emigrate-cicd
+
+
+provide credentials
+
+got this after clone 
+D:\K8S_bacup\emigrate-cicd
+
+Open above directory using git bash
+
+
+to check branch
+git branch
+
+created a branch
+git branch sid_k8s_backup
+
+switched to branch
+git checkout sid_k8s_backup
+
+After clonning onto the particular directory
+created one directory and added backup folder into it 
+
+created a directory K8S
+D:\K8S_bacup\emigrate-cicd\K8S
+and added file into K8S
+
+git status
+got the file for commit
+
+On branch sid_k8s_backup
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+        K8S/shared/
+
+
+git add K8S/shared/
+
+git gui
+commit
+push
+
+from web gitlab created MR request from sid_k8s_backup to master
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Push Docs from Local to Gitlab
+go to the directory
+add files
+
+git init
+git status
+git add .
+git commit -m "Myc commit"
+git branch -M main
+git remote add origin https://github.com/siddingle/MyDocs.git
+git push -u origin main
+It will ask for authentication
+
+
+

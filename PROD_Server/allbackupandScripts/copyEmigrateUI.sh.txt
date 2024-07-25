@@ -1,0 +1,64 @@
+#!/bin/sh
+
+
+current_user=$(whoami)
+Module=Emigrate-UI-specific-branch
+env="DC-PROD"
+buildn="$1"
+
+ if [ "$current_user" == "root" ] && [ $buildn -gt 0 ] && [ $env = "DC-PROD" ]; then
+    echo "Download started for $Module-$env-$buildn-$(date +%d-%b) :- $(date +%T)"
+    pwd
+    sleep 5
+
+
+
+    wget http://192.168.150.8:8080/job/$Module/$buildn/artifact/e-migrate-withoutCaptcha-$env.zip --output-document e-migrate-withoutCaptcha-$env-$(date +%d-%b).zip
+
+
+        file_size=$(stat -c %s "e-migrate-withoutCaptcha-$env-$(date +%d-%b).zip")
+        file_size_mb=$((file_size / 1024 / 1024))
+        echo "file_size= ${file_size}"
+        echo "${FileName} file_size in mb= ${file_size_mb}"
+
+   if [ ${file_size_mb} -gt 30 ]; then
+
+    sleep 5
+    echo "Download completed :- $(date +%T)"
+    echo "Unzipping Emigrate-UI-specific-branch-$env-$(date +%d-%b).zip"
+    echo "--------------------------------------------------"
+    unzip e-migrate-withoutCaptcha-$env-$(date +%d-%b).zip
+
+
+    echo "creating backup directory and backup for existing UI in/var/www/backup/$(date +%Y-%m-%d)"
+
+    mkdir -p ../backup/$(date +%Y-%m-%d)
+
+    cp -pr ../html/live/ ../backup/$(date +%Y-%m-%d)/
+
+    echo "Backup completed"
+
+    rm -rf /var/www/html/live/*
+
+    mv e-migrate/* ../html/live/
+    cp -r config.json ../html/live/assets/config/
+    cp -pr cdn/assets/pdfs/ ../html/live/assets/
+    cp -pr /workspace/bkup/robots.txt ../html/live/
+
+    chmod -R 755 ../html/live/*
+
+    rm -rf e-migrate
+     echo "Deployed New build into the html/ :- $(date +%T)"
+
+    echo "Deleting Backup Older than 10days"
+    ls -td e-migrate-w*.zip | tail -n +11 | xargs rm -rf
+    ls -td e-migrate-c*.zip | tail -n +3 | xargs rm -rf
+    cd ../backup
+    ls -td 2024*/ | tail -n +11 | xargs rm -rf
+   else
+        echo "file size is less than 30MB, Existing shell"
+   fi
+
+else
+        echo "Exited this shell [ 1--> Build number is required as argument 2--> Only root user can run this script ]"
+fi

@@ -1,0 +1,78 @@
+SonarQube Installation Process
+Document refere
+https://blog.devops.dev/how-to-install-sonarqube-on-linux-rhel-centos-57eb5893be
+sudo yum update -y
+sudo yum install wget unzip -y
+sudo yum install java-11-openjdk-devel -y
+sudo yum install -y https://download.postgresql.org/pub/repos/yum/reporpms/EL-7-x86_64/pgdg-redhat-repo-latest.noarch.rpm
+rpm -Uvh https://download.postgresql.org/pub/repos/yum/reporpms/EL-8-x86_64/pgdg-redhat-repo-latest.noarch.rpm
+
+sudo yum -qy module disable postgresql (optional)
+sudo yum -y install postgresql14 postgresql14-server
+sudo /usr/pgsql-14/bin/postgresql-14-setup initdb
+sudo systemctl enable --now postgresql-14
+sudo passwd postgres
+admin
+sudo su - postgres
+createuser sonar
+psql
+ALTER USER sonar WITH ENCRYPTED password 'sonar';
+CREATE DATABASE sonarqube OWNER sonar;
+GRANT ALL PRIVILEGES ON DATABASE sonarqube to sonar; 
+\q
+exit
+sudo useradd sonar
+sudo passwd sonar
+admin
+sudo wget https://binaries.sonarsource.com/Distribution/sonarqube/sonarqube-9.1.0.47736.zip
+sudo unzip sonarqube-9.1.0.47736.zip
+sudo mv sonarqube-9.1.0.47736 sonarqube
+sudo groupadd sonar
+sudo chown -R sonar:sonar /workspace/sonarQube/sonarqube
+sudo vi /workspace/sonarQube/sonarqube/conf/sonar.properties
+uncommented below
+sonar.jdbc.username=sonar
+sonar.jdbc.password=admin
+sudo vi /workspace/sonarQube/sonarqube/bin/linux-x86-64/sonar.sh
+RUN_AS_USER=sonar
+sudo vi /etc/systemd/system/sonar.service
+copied below
+
+[Unit]
+Description=SonarQube service
+After=syslog.target network.target
+[Service]
+Type=forking
+ExecStart=/workspace/sonarQube/sonarqube/bin/linux-x86-64/sonar.sh start
+ExecStop=/workspace/sonarQube/sonarqube/bin/linux-x86-64/sonar.sh stop
+User=sonar
+Group=sonar
+Restart=always
+[Install]
+WantedBy=multi-user.target
+
+sudo systemctl daemon-reload
+sudo systemctl enable --now sonar
+
+credentials
+http://192.168.170.6:9000/projects
+Admin Credentails
+admin
+Meeting#4321
+----------------------------------
+eMigrate
+account@123
+
+
+
+SonarQube Integration with jenkins
+Docs
+https://sunilhari.medium.com/how-to-integrate-sonarqube-and-jenkins-721d5efd3cb6
+
+
+add credentials a secret in jenkins
+
+token
+ID-emigrate-sonar-qube-token
+secret text-60d03838d30596e91c799c330c57149741a44ed0
+

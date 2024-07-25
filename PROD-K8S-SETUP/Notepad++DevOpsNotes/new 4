@@ -1,0 +1,35 @@
+admin 88
+Auth 30
+FE 144
+gateway 29
+EC 136
+greiva 55
+Notification 15
+Payment 15
+RA 149
+Report 44
+security 51
+workflow 30
+
+
+sed -i '/^# Add these lines below$/a\
+STATIC_DOCUMENT_DIRECTORY=http:\/\/192.168.150.16\/assets\/pdfs\/staticdocuments' services_UAT.properties
+
+
+
+curl http://192.168.150.8:8080/job/$Module/$buildn/artifact/e-migrate-$env.zip --output e-migrate-$env-$(date +%d-%b).zip
+
+curl http://192.168.150.8:8080/job/Emigrate-UI-specific-branch/11/artifact/e-migrate-withoutCaptcha-DOCKER-KUBE.zip --output e-migrate-withoutCaptcha-DOCKER-KUBE.zip
+
+docker tag emigratefiles:latest nexus.mea-emigrate.com:9890/nexus/emigratefiles:latest
+
+
+elif [ ${Environment} == "UAT-DOCKER-KUBE" ]
+then
+    # 192.168.150.16
+    # APP_HOST_IP_ADDRESS=192.168.150.16
+    sed -i 's|'https://mea.trigyn.com/emigrateUATAPI'|'http://192.168.150.16:8080/api'|g' ./services_UAT.properties
+    sed -i 's|'https://mea.trigyn.com/emigrateUAT'|'http://192.168.150.16:18080'|g' ./services_UAT.properties
+    sed -i 's|'192.168.150.10:3306'|'192.168.150.19:3306'|g' ./services_UAT.properties
+    #cat ./services_UAT.properties
+	docker build -f ./Dockerfile  -t ${LOWER_SERVICE_NAME}:${BuildId} --build-arg APP_HOST_IP_ADDRESS=192.168.150.16 --build-arg BUILD_ID=${BuildId} --build-arg ENVIRONMENT=UAT ./ || exit 1;

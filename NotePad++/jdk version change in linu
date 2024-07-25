@@ -1,0 +1,99 @@
+download jdk versiol gz file un tar it and copy the contnet inside /usr/lib/jvm/
+
+export JAVA_HOME=/usr/lib/jvm/jre-11-openjdk-11.0.23.0.9-2.el7_9.x86_64
+export PATH=$JAVA_HOME/bin:$PATH
+source ~/.bashrc
+
+
+
+
+for sdkmanager tools
+
+export ANDROID_HOME=$HOME/android-sdk
+export PATH=$JAVA_HOME/bin:$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools:$PATH
+
+# Accept licenses
+yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses
+
+# List available packages
+$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --list
+
+
+
+
+
+sudo keytool -importcert -file ccf4f61237557d79.crt -keystore $JAVA_HOME/lib/security/cacerts -alias intermediate
+
+
+
+
+sdkmanager --verbose --update
+
+
+
+
+open the ansible server 192.168.70.5
+cd /home/meauser
+added below 3 line in ingress.yml
+
+annotations:
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      proxy_set_header _csrf $http_x_csrf_token;
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress-myservice
+  namespace: emigrate-dev-ns
+  annotations:
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      proxy_set_header _ $http_x_csrf_token;
+spec:
+  rules:
+    - host: emigrateui.mea-emigrate.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: emigrate-ui-svc
+                port:
+                  number: 80
+    - host: emigrateapi.mea-emigrate.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: gatewayservice-svc
+                port:
+                  number: 8080
+  ingressClassName: nginx
+  
+  
+  
+  
+  
+  kubectl get configmap
+  kubectl edit configmap myrelease-ingress-nginx-controller
+  
+  data:
+  enable-underscores-in-headers: "true" #added this line
+  change the value from false to true for below
+  allow-snippet-annotations: "true"
+  
+  
+  kubectl rollout restart deployment
+  
+  
+  curl -L -H "_csrf: nWq4wGRlwx3bOQs6" http://emigrateui.mea-emigrate.com
+  
+  
+  curl -L -H "_csrf: nWq4wGRlwx3bOQs6" http://emigrateapi.mea-emigrate.com/api/auth/login
+  error recieved
+  
+  {"statusCode":400,"error":{"errorId":"foiF5CuY1T33w2yX","errorCode":"EMIGRATE_AUTH_ERR_001","errorMessage":"w.s.au.auth.gen.error"}}
+  
+

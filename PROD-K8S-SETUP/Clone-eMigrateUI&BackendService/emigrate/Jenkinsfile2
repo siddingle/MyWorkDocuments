@@ -1,0 +1,91 @@
+@Library('emigrate-cicd-libraries') _
+pipeline {
+
+    agent {
+        label "${AGENT}"
+    }
+
+    tools {
+        nodejs "NPM"
+    }
+
+    environment {
+        KUBECONFIG = credentials('emigrate_kube_configfile')
+        SERVICE_NAME = 'emigrateui'
+    }
+
+    stages {
+                stage('Checkout SCM CDN') {
+           steps {
+               script {
+               cicdui.checkoutCdn()
+               }
+              
+            }
+        } 
+
+                stage('Copy PDF Folder') {
+           steps {
+               script {
+               cicdui.addPdf()
+               }
+            }
+        }
+
+
+        stage('npm build') {
+           steps {
+               script {
+               cicdui.build()
+               }
+            }
+        }
+
+        stage('Creating zip'){
+            steps {
+                script {
+               cicdui.zip()
+                }
+            }
+        }      
+
+        stage('Docker Image and Push to Nexus') {
+            steps {
+                echo "Creating an Docker Image"
+                script {
+                 cicdui.dockerImagePushToNexus()
+                }
+               }
+
+        }
+
+        stage('Deployment to K8S') {
+            steps {
+                script {
+                 cicdui.deploymentToKuberentes()
+                }
+
+            }
+        }
+
+        stage('Monitoring Deployment') {
+                steps {
+                    script {
+                    cicdui.monitoringDeployment()
+                    }
+                }
+            }
+
+
+    }
+
+    post {
+        success {
+            echo 'Pipeline succeeded'
+        }
+        failure {
+            echo 'Pipeline failed'
+        }
+    }
+}
+

@@ -1,0 +1,32 @@
+#!/bin/sh
+
+service="$1"
+buildn="$2"
+if [ $buildn -gt 0 ]
+then
+    echo "Docker Nexus login for $Module-$buildn  :- $(date +%T)"
+    pwd
+    sleep 5
+    docker login http://192.168.150.8:9081/nexus/repository/emigrate-docker-hosted-repo/ -u admin -p Emigrate#007
+	docker pull 192.168.150.8:9081/nexus/${service}:${buildn}
+	echo "Image Pulled from nexus :- $(date +%T)"
+	docker run -d  192.168.150.8:9081/${service}:${buildn}
+    echo "Docker Image for ${service}:${buildn} is running....  :- $(date +%T)"
+fi	
+
+
+
+#!/bin/sh
+
+service=administrationservice
+buildn="$1"
+if [ $buildn -gt 0 ]
+then
+   echo " $service $buildn"
+   ./pullrunimage.sh $service $buildn
+fi
+
+
+
+
+/home/migration/emigrate/server/packages/eReport/eReportApplication.yml

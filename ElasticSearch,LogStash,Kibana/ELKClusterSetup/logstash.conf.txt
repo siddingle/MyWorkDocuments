@@ -1,0 +1,38 @@
+input {
+  tcp {
+    port => 5045
+    codec => json
+    type => "userActivity"
+  }
+  tcp {
+    port => 5044
+    codec => json
+    type => "generic"
+  }
+
+}
+
+ output {
+   if [type] == "userActivity" {
+  elasticsearch {
+    hosts => ["http://localhost:9200","http://192.168.150.19:9200","http://192.168.150.40:9200"]
+   # ssl => true
+   # ssl_certificate_verification => false
+    user => "elastic"
+    password => "Meeting#4321"
+    #index => "socket-server-%{+YYYY.MM.dd}"
+    index => "user-activity-%{+YYYY.MM.dd}"
+  }
+}
+  if [type] == "generic" {
+  elasticsearch {
+    hosts => ["http://localhost:9200","http://192.168.150.19:9200","http://192.168.150.40:9200"]
+   # ssl => true
+   # ssl_certificate_verification => false
+    user => "elastic"
+    password => "Meeting#4321"
+    index => "socket-server-%{+YYYY.MM.dd}"
+
+  }
+}
+}

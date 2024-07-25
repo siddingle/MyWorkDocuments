@@ -1,0 +1,113 @@
+sudo mkdir -p /etc/docker/certs.d/apps.trigyn.com:443/
+
+
+
+
+
+
+when tried whith http and https option on nexus server.
+Error response from daemon: login attempt to https://apps.trigyn.com/v2/ failed with status: 404 Not Found
+
+
+
+
+If you're encountering authentication and connectivity issues when trying to pull Docker images from the Nexus repository at apps.trigyn.com/nexus, here are some steps you can take to troubleshoot and resolve the problem:
+
+Check Nexus Repository Configuration:
+
+Make sure that the Nexus repository is properly configured and accessible. Verify that the repository is set up to allow Docker image access, and that the repository path, credentials, and permissions are correctly configured.
+
+Verify Nexus Repository URL:
+
+Double-check the URL of the Nexus repository. Ensure that it's in the correct format: https://apps.trigyn.com/nexus/repository-name.
+
+Check Docker Login:
+
+Ensure that you're using the correct docker login command and providing the correct Nexus repository URL:
+
+bash
+Copy code
+docker login apps.trigyn.com/nexus
+Make sure the username and password provided match your Nexus credentials.
+
+Firewall and Network Connectivity:
+sudo iptables -A INPUT -p tcp --dport 8081 -j ACCEPT
+sudo iptables -A INPUT -p tcp --dport 8443 -j ACCEPT
+sudo iptables -A INPUT -p tcp --dport 9081-j ACCEPT
+
+Ensure that your Docker server has proper network connectivity to the apps.trigyn.com server where Nexus is hosted. Check for any firewall rules or network configurations that might be blocking the connection.
+
+Proxy Settings:
+
+If you're behind a proxy, make sure your Docker server is configured to work with the proxy. Set the appropriate environment variables (HTTP_PROXY, HTTPS_PROXY, NO_PROXY) to ensure Docker can access external resources.
+
+SSL Certificate Issues:
+
+If the Nexus repository is using HTTPS, verify that your Docker server trusts the SSL certificate used by the Nexus server. You might need to import the Nexus SSL certificate into your Docker client's trusted certificate store.
+
+Verify Credentials:
+
+Double-check your Nexus credentials (username and password) to ensure they are correct and have the necessary permissions to access the repository.
+
+Check Nexus Logs:
+
+Check the Nexus server logs for any error messages related to authentication or connectivity issues. These logs can provide insights into the root cause of the problem.
+
+Test Connectivity with cURL:
+
+You can use the curl command to test connectivity to the Nexus repository:
+
+bash
+Copy code
+curl -I https://apps.trigyn.com/nexus/
+This will help you determine if there are any issues with reaching the Nexus server.
+
+Contact Nexus Support:
+
+If you've tried all troubleshooting steps and are still unable to resolve the issue, consider reaching out to the support resources for Nexus at apps.trigyn.com. They might be able to provide specific assistance for your setup.
+
+Remember that resolving connectivity and authentication issues might require a combination of these steps and further investigation. Each step will help you narrow down the possible causes of the problem and work towards a solution.
+
+
+to see content of keystore.jks
+keytool -list -v -keystore keystore.jks
+
+/opt/sonatype-work/nexus3/log 
+-------------------------------------------------------------------------------------------------------------------------
+1
+keytool -genkeypair -keystore keystore.jks -storepass password -alias apps.trigyn.com \
+ -keyalg RSA -keysize 2048 -validity 5000 -keypass password \
+ -dname 'CN=apps.trigyn.com, OU=Sonatype, O=Sonatype, L=Unspecified, ST=Unspecified, C=IN' \
+ -ext 'SAN=DNS:apps.trigyn.com'
+2
+keytool -exportcert -keystore keystore.jks -alias apps.trigyn.com -rfc > nexus.cert
+keytool -exportcert -keystore keystore.jks -alias jetty -rfc > nexus.cert
+3
+keytool -importkeystore -srckeystore keystore.jks -destkeystore nexus.p12 -deststoretype PKCS12
+4
+keytool -list -keystore nexus.p12 -storetype PKCS12
+
+Certificate fingerprint (SHA-256): 09:F6:2D:EB:A5:39:78:88:B7:5A:FD:73:C2:0D:90:C6:E0:8F:37:8C:DF:C0:51:EF:01:83:8D:B0:A6:C9:B2:55
+nexus/
+Certificate fingerprint (SHA-256): 6A:9C:47:19:D3:F1:95:01:18:39:B9:ED:FC:38:09:20:61:12:5E:03:5A:F2:DC:0B:D3:F8:C6:B6:BC:BD:13:96
+
+5
+openssl pkcs12 -nokeys -in nexus.p12 -out nexus.pem
+
+Stored pem file in nexus ssl certificate
+
+6
+openssl pkcs12 -nocerts -nodes -in nexus.p12 -out nexus.key
+
+
+
+openssl s_client -connect server-apps.trigyn.com:443 -showcerts
+-------------------------------------------------------------------------------------------------
+convert .cer file to .jks
+keytool -importcert -file apps.trigyn.com-der.cer -keystore keystore.jks -alias jetty
+
+
+
+
+
+

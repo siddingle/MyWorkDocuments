@@ -1,0 +1,7 @@
+FROM registry.access.redhat.com/ubi9/openjdk-11-runtime:1.18-4
+USER root
+RUN microdnf update -y && microdnf install -y fontconfig
+RUN microdnf install -y tzdata
+
+# Set the timezone to IST
+RUN ln -sf /usr/share/zoneinfo/Asia/Kolkata /etc/localtime && echo "Asia/Kolkata" > /etc/timezone

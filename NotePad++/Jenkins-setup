@@ -1,0 +1,30 @@
+https://www.jenkins.io/doc/book/installing/linux/
+sudo wget -O /etc/yum.repos.d/jenkins.repo \
+    https://pkg.jenkins.io/redhat-stable/jenkins.repo
+
+sudo rpm --import https://pkg.jenkins.io/redhat-stable/jenkins.io-2023.key
+
+sudo yum upgrade
+
+sudo yum install fontconfig java-11-openjdk
+
+sudo yum install jenkins
+sudo systemctl daemon-reload
+
+sudo systemctl enable jenkins
+sudo systemctl start jenkins
+sudo systemctl status jenkins
+
+
+
+common between all servers
+sudo yum install fontconfig java-11-openjdk
+sudo yum install git
+sudo yum install -y yum-utils
+sudo yum-config-manager --add-repo https://download.docker.com/linux/rhel/docker-ce.repo
+
+sudo yum install docker-ce
+sudo systemctl start docker
+sudo yum install -y kubectl
+
+http://192.168.70.19:8080/

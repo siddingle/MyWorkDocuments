@@ -1,0 +1,29 @@
+Rajeev Notes
+16/5/2023
+Git Command
+Gitlab commands
+Project Configuration in Github or GitLab
+Jenkin Servers
+
+17/5/2023
+YAML
+Creation of Build & Release Pipeline
+Git Lab Runner
+Revision of Git Commands
+Concepts of various DevOps Terminology
+
+practice on linux command
+
+
+24/5/2023
+Linux Commands
+Bash & Shell Scripting
+3 Jenkin
+Linux Command Cheatsheet
+How to ubuntu on windows machine
+
+
+
+ebana promithios teraform
+
+

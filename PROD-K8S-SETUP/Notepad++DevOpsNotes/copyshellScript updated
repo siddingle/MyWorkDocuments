@@ -1,0 +1,481 @@
+curl -u siddharth:11cc4e789263c23b85b1f67d1ebcd2f7bc https://apps.trigyn.com/jenkins2/job/$Module/$buildn/artifact/SvrJsbJarFdr/$FileName --output $FileName
+curl -u siddharth:11cc4e789263c23b85b1f67d1ebcd2f7bc https://apps.trigyn.com/jenkins2/job/$Module/$buildn/artifact/$env --output $env 
+
+#for DEV and QA change the env name to support env file.
+
+#!/bin/sh
+
+Module="$1"
+FileName="$2"
+buildn="$3"
+env=services_DEV.properties
+
+if [ $buildn -gt 0 ] 
+then 
+    echo "Download started for $Module-$buildn  :- $(date +%T)"
+    pwd
+
+    curl -u siddharth:11cc4e789263c23b85b1f67d1ebcd2f7bc https://apps.trigyn.com/jenkins2/job/$Module/$buildn/artifact/SvrJsbJarFdr/$FileName --output $FileName
+    echo "Download completed :- $(date +%T)"
+	
+	 file_size=$(stat -c %s "$FileName")
+	 file_size_mb=$((file_size / 1024 / 1024))
+	 echo "file_size= ${file_size}"
+	 echo "${FileName} file_size in mb= ${file_size_mb}"	 
+	 
+	 if [ ${file_size_mb} -gt 30 ]; then
+
+    echo "Download started for $env"
+    curl -u siddharth:11cc4e789263c23b85b1f67d1ebcd2f7bc https://apps.trigyn.com/jenkins2/job/$Module/$buildn/artifact/$env --output $env 
+    echo "Download completed for $env :- $(date +%T)"
+    cd ..
+    pwd
+    echo "Backup Started for $env :- $(date +%T)"
+    cp $env backup/
+    echo "Backup Completed :- $(date +%T)"
+
+    pwd
+    echo "Backup Started for $Module :- $(date +%T)"
+    cp $FileName backup/
+    echo "Backup Completed :- $(date +%T)" 
+    
+    echo "New Build and $env  will be added in 3 seconds"
+    cp newbuild/$FileName .
+    cp newbuild/$env .
+    echo "new Build and $env Added into packages :- $(date +%T)"
+
+    if [ $Module == EMigrate-IntegrationService ]; then
+    echo "Sending Integration Service to batch"
+#   cp batch/$env batch/backup/
+    cp batch/$FileName batch/backup/
+#   cp newbuild/$env batch/
+    cp newbuild/$FileName batch/
+   else
+    echo "Process Completed"
+   fi
+   
+   else
+    echo "File size is not greater than 30MB, Exited Script"
+   fi
+   
+   
+
+    
+else
+
+    echo "Download started for $Module-lastSuccessfulBuild :- $(date +%T)"
+    pwd
+   #  curl -u siddharth.ingle:11fb5fd3766920ced86f67c0df83ef2f1c https://apps.trigyn.com/jenkins2/job/$Module/lastSuccessfulBuild/artifact/SvrJsbJarFdr/$FileName --output $FileName
+    curl -u siddharth:11cc4e789263c23b85b1f67d1ebcd2f7bc https://apps.trigyn.com/jenkins2/job/$Module/lastSuccessfulBuild/artifact/SvrJsbJarFdr/$FileName --output $FileName
+    echo "Download completed :- $(date +%T)"
+	
+	file_size=$(stat -c %s "$FileName")
+	file_size_mb=$((file_size / 1024 / 1024))
+	echo "file_size= ${file_size}"
+	echo "${FileName} file_size in mb= ${file_size_mb}"	 
+	 
+	if [ ${file_size_mb} -gt 30 ]; then
+
+    echo "Downlload started for $env"
+    curl -u siddharth:11cc4e789263c23b85b1f67d1ebcd2f7bc https://apps.trigyn.com/jenkins2/job/$Module/lastSuccessfulBuild/artifact/$env --output $env 
+    echo "Download completed for $env :- $(date +%T)"
+    cd ..
+
+    pwd
+    echo "Backup Started for $env :- $(date +%T)"
+    cp $env backup/
+    echo "Backup Completed :- $(date +%T)"
+
+    pwd
+    echo "Backup Started for $Module :- $(date +%T)"
+    cp $FileName backup/
+    echo "Backup Completed :- $(date +%T)"
+
+    echo "New Build and $env  will be added in 3 seconds"
+    cp newbuild/$FileName .
+    cp newbuild/$env .
+    echo "new Build and $env Added into packages :- $(date +%T)"
+    
+
+    if [ $Module == EMigrate-IntegrationService ]; then
+    echo "Sending Integration Service to batch"
+ #   cp batch/$env batch/backup/
+    cp batch/$FileName batch/backup/
+ #   cp newbuild/$env batch/
+    cp newbuild/$FileName batch/
+   else
+    echo "Process Completed"
+   fi
+   
+   else
+   echo "File size is not greater than 30MB, Exited Script"
+   fi
+   
+
+    
+fi
+#------------------------------------------------------------------------------------------------------------------------------------------
+#------------------------------------------------------------------------------------------------------------------------------------------
+#------------------------------------------------------------------------------------------------------------------------------------------
+#for UAT.	
+
+#!/bin/sh
+
+Module="$1"
+FileName="$2"
+buildn="$3"
+env=services_UAT.properties
+
+if [ $buildn -gt 0 ] 
+then 
+    echo "Download started for $Module-$buildn  :- $(date +%T)"
+    pwd
+   #  curl -u siddharth.ingle:11fb5fd3766920ced86f67c0df83ef2f1c https://apps.trigyn.com/jenkins2/job/$Module/$buildn/artifact/SvrJsbJarFdr/$FileName --output $FileName
+    curl http://192.168.150.8:8080/job/$Module/$buildn/artifact/SvrJsbJarFdr/$FileName --output $FileName
+    echo "Download completed :- $(date +%T)"
+	
+	 file_size=$(stat -c %s "$FileName")
+	 file_size_mb=$((file_size / 1024 / 1024))
+	 echo "file_size= ${file_size}"
+	 echo "${FileName} file_size in mb= ${file_size_mb}"	 
+	 
+	 if [ ${file_size_mb} -gt 30 ]; then
+
+    echo "Download started for $env"
+    curl http://192.168.150.8:8080/job/$Module/$buildn/artifact/$env --output $env
+    echo "Download completed for $env :- $(date +%T)"
+    cd ..
+    pwd
+    echo "Backup Started for $env :- $(date +%T)"
+    cp $env backup/
+    echo "Backup Completed :- $(date +%T)"
+
+    pwd
+    echo "Backup Started for $Module :- $(date +%T)"
+    cp $FileName backup/
+    echo "Backup Completed :- $(date +%T)" 
+    
+    echo "New Build and $env  will be added in 3 seconds"
+    cp newbuild/$FileName .
+    cp newbuild/$env .
+    echo "new Build and $env Added into packages :- $(date +%T)"
+
+    if [ $Module == EMigrate-IntegrationService ]; then
+    echo "Sending Integration Service to batch"
+#   cp batch/$env batch/backup/
+    cp batch/$FileName batch/backup/
+#   cp newbuild/$env batch/
+    cp newbuild/$FileName batch/
+   else
+    echo "Process Completed"
+   fi
+   
+   else
+    echo "File size is not greater than 30MB, Exited Script"
+   fi
+   
+   
+
+    
+else
+
+    echo "Download started for $Module-lastSuccessfulBuild :- $(date +%T)"
+    pwd
+   #  curl -u siddharth.ingle:11fb5fd3766920ced86f67c0df83ef2f1c https://apps.trigyn.com/jenkins2/job/$Module/lastSuccessfulBuild/artifact/SvrJsbJarFdr/$FileName --output $FileName
+    curl http://192.168.150.8:8080/job/$Module/lastSuccessfulBuild/artifact/SvrJsbJarFdr/$FileName --output $FileName
+    echo "Download completed :- $(date +%T)"
+	
+	file_size=$(stat -c %s "$FileName")
+	file_size_mb=$((file_size / 1024 / 1024))
+	echo "file_size= ${file_size}"
+	echo "${FileName} file_size in mb= ${file_size_mb}"	 
+	 
+	if [ ${file_size_mb} -gt 30 ]; then
+
+    echo "Downlload started for $env"
+    curl http://192.168.150.8:8080/job/$Module/lastSuccessfulBuild/artifact/$env --output $env
+    echo "Download completed for $env :- $(date +%T)"
+    cd ..
+
+    pwd
+    echo "Backup Started for $env :- $(date +%T)"
+    cp $env backup/
+    echo "Backup Completed :- $(date +%T)"
+
+    pwd
+    echo "Backup Started for $Module :- $(date +%T)"
+    cp $FileName backup/
+    echo "Backup Completed :- $(date +%T)"
+
+    echo "New Build and $env  will be added in 3 seconds"
+    cp newbuild/$FileName .
+    cp newbuild/$env .
+    echo "new Build and $env Added into packages :- $(date +%T)"
+    
+
+    if [ $Module == EMigrate-IntegrationService ]; then
+    echo "Sending Integration Service to batch"
+ #   cp batch/$env batch/backup/
+    cp batch/$FileName batch/backup/
+ #   cp newbuild/$env batch/
+    cp newbuild/$FileName batch/
+   else
+    echo "Process Completed"
+   fi
+   
+   else
+   echo "File size is not greater than 30MB, Exited Script"
+   fi
+   
+
+    
+fi
+
+#------------------------------------------------------------------------------------------------------------------------------------------------------------
+#------------------------------------------------------------------------------------------------------------------------------------------------------------
+#------------------------------------------------------------------------------------------------------------------------------------------------------------
+# copy shell for UI DEV,QA,UAT
+
+
+#!/bin/sh
+
+Module=Emigrate-UI
+env="QA"
+buildn="$1"
+
+if [ $buildn -gt 0 ] && [ $env = QA ]; then
+    echo "Download started for $Module-$env-$buildn-$(date +%d-%b) :- $(date +%T)"
+    pwd
+
+    curl -u siddharth:11cc4e789263c23b85b1f67d1ebcd2f7bc https://apps.trigyn.com/jenkins2/job/$Module/$buildn/artifact/e-migrate-$env.zip --output e-migrate-$env-$(date +%d-%b).zip
+    echo "Download completed :- $(date +%T)"
+	
+	file_size=$(stat -c %s "e-migrate-$env-$(date +%d-%b).zip")
+	file_size_mb=$((file_size / 1024 / 1024))
+	echo "file_size= ${file_size}"
+	echo "${FileName} file_size in mb= ${file_size_mb}"	 
+	 
+	if [ ${file_size_mb} -gt 30 ]; then
+	
+    echo "Unzipping e-migrate-$env-$(date +%d-%b).zip"
+    unzip e-migrate-$env-$(date +%d-%b).zip
+    echo "changing name e-migrate to emigrate in newbuild/"
+    mv e-migrate emigrate
+    echo "removing backup/emigrate "
+    rm -rf ../backup/emigrate
+    echo "coping /html/emigrate into /backup/ "
+    cp -r ../html/emigrate ../backup/
+    echo "Backup added into backup"
+    echo "removing /html/emigrate_old"
+    rm -rf ../html/emigrate_old
+    echo "moving /html/emigrate into /html/emigrate_old "
+    mv ../html/emigrate ../html/emigrate_old
+    echo "Backup added into html/emigrate_old"
+    sleep 3
+    mv emigrate/ ../html/
+
+    echo "Deployed New build into the html/ :- $(date +%T)"
+	
+	else 
+	echo "file size is less than 30MB, Existing shell"
+	fi
+	
+
+elif [ $buildn -gt 0 ] && [ $env = DEV ]; then
+    echo "Download started for $Module-$env-$buildn-$(date +%d-%b) :- $(date +%T)"
+    pwd
+    sleep 5
+    curl -u siddharth:11cc4e789263c23b85b1f67d1ebcd2f7bc https://apps.trigyn.com/jenkins2/job/$Module/$buildn/artifact/e-migrate-$env.zip --output e-migrate-$env-$(date +%d-%b).zip
+    echo "Download completed :- $(date +%T)"
+	
+	file_size=$(stat -c %s "e-migrate-$env-$(date +%d-%b).zip")
+	file_size_mb=$((file_size / 1024 / 1024))
+	echo "file_size= ${file_size}"
+	echo "${FileName} file_size in mb= ${file_size_mb}"	 
+	 
+	if [ ${file_size_mb} -gt 30 ]; then
+	
+    echo "Unzipping e-migrate-$env-$(date +%d-%b).zip"
+    unzip e-migrate-$env-$(date +%d-%b).zip
+    echo "Removing /html from backup"
+    rm -rf ../backup/html
+    echo "Coping /html into backup/"
+    cp -r ../html ../backup
+    echo "Removing /html_old from backup/"
+    rm -rf ../html_old
+    echo "Moving /html into html_old/"
+    mv ../html ../html_old
+    echo "Added html directory backup into backup and html_old"
+    mkdir ../html
+    echo "Deploying content of e-migrate into html/"
+    sleep 3
+    mv e-migrate/* ../html
+    rm -rf e-migrate
+    echo "Deployed New build into the html/ :- $(date +%T)"
+
+	else
+	echo "file size is less than 30MB, Existing shell"
+	fi
+	
+	
+	
+elif [ $buildn -gt 0 ] && [ $env = UAT ]; then
+    echo "Download started for $Module-$env-$buildn-$(date +%d-%b) :- $(date +%T)"
+    pwd
+    sleep 5
+
+    curl http://192.168.150.8:8080/job/$Module/$buildn/artifact/e-migrate-$env.zip --output e-migrate-$env-$(date +%d-%b).zip
+    echo "Download completed :- $(date +%T)"
+
+    file_size=$(stat -c %s "e-migrate-$env-$(date +%d-%b).zip")
+	file_size_mb=$((file_size / 1024 / 1024))
+	echo "file_size= ${file_size}"
+	echo "${FileName} file_size in mb= ${file_size_mb}"	 
+	 
+	if [ ${file_size_mb} -gt 30 ]; then
+
+    echo "Unzipping e-migrate-$env-$(date +%d-%b).zip"
+    echo "--------------------------------------------------"
+    unzip e-migrate-$env-$(date +%d-%b).zip
+    echo "renamed unzip e-migrate to emigrateUAT "
+    mv e-migrate emigrateUAT
+    rm -rf ../backup/emigrateUAT
+    echo "taking backup from /html/emigrateUAT to /backup/"
+    cp -r ../html/emigrateUAT ../backup/
+    echo "Backup completed"
+    echo "taking backup from /html/emigrateUAT to /html/emigrateUAT_old/"
+    rm -rf ../html/emigrateUAT_old
+    mv ../html/emigrateUAT ../html/emigrateUAT_old
+     echo "Deploying New build into the html/ :- $(date +%T)" 
+    sleep 3
+    mv emigrateUAT/ ../html/
+     echo "Deployed New build into the html/ :- $(date +%T)"
+	 
+	else
+	echo "file size is less than 30MB, Existing shell"
+	fi 
+
+else
+    echo "This file requires one command line argument [ 1=BuildNumber eg. (./copyEmigrateUI.sh 41) ]"
+
+fi
+
+
+#-------------------------------------------------------------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------------------------------------------------------
+#UI-CDN for DEV,QA,UAT.
+#change branch name for DEV="develop"
+
+
+
+#!/bin/sh
+
+Module=Emigrate-UI-cdn
+env="UAT"
+buildn="$1"
+branch="master"
+rm -rf cdn
+mkdir cdn
+
+if [ $buildn -gt 0 ] && [ $env = QA ]; then
+    echo "Download started for $Module-$env-$buildn-$(date +%d-%b) :- $(date +%T)"
+    pwd
+
+    curl -u siddharth:11cc4e789263c23b85b1f67d1ebcd2f7bc https://apps.trigyn.com/jenkins2/job/$Module/$buildn/artifact/e-migrate-cdn-$branch.zip --output e-migrate-cdn-$branch-$(date +%d-%b).zip
+    
+	file_size=$(stat -c %s "e-migrate-cdn-$branch-$(date +%d-%b).zip")
+	file_size_mb=$((file_size / 1024 / 1024))
+	echo "file_size= ${file_size}"
+	echo "${FileName} file_size in mb= ${file_size_mb}"	 
+	 
+	if [ ${file_size_mb} -gt 500 ]; then
+	
+	echo "Unzipping e-migrate-cdn-$branch-$(date +%d-%b).zip"
+    unzip e-migrate-cdn-$branch-$(date +%d-%b).zip -d ./cdn
+
+    echo "Copy cdn into ../html/emigrate/assets"
+    cp -R cdn/assets/pdfs ../html/emigrate/assets/
+    
+    else
+    echo "File size is less than 500MB Existed Shell"
+    fi	
+
+elif [ $buildn -gt 0 ] && [ $env = DEV ]; then
+    echo "Download started for $Module-$env-$buildn-$(date +%d-%b) :- $(date +%T)"
+    pwd
+
+    curl -u siddharth:11cc4e789263c23b85b1f67d1ebcd2f7bc https://apps.trigyn.com/jenkins2/job/$Module/$buildn/artifact/e-migrate-cdn-$branch.zip --output e-migrate-cdn-$branch-$(date +%d-%b).zip
+    
+	file_size=$(stat -c %s "e-migrate-cdn-$branch-$(date +%d-%b).zip")
+	file_size_mb=$((file_size / 1024 / 1024))
+	echo "file_size= ${file_size}"
+	echo "${FileName} file_size in mb= ${file_size_mb}"	 
+	 
+	if [ ${file_size_mb} -gt 500 ]; then
+	
+	echo "Unzipping e-migrate-cdn-$branch-$(date +%d-%b).zip"
+    unzip e-migrate-cdn-$branch-$(date +%d-%b).zip -d ./cdn
+
+    echo "Copy cdn into ../html/assets"
+    cp -R cdn/assets/pdfs ../html/assets/
+	
+	else
+    echo "File size is less than 500MB Existed Shell"
+    fi
+	
+	
+
+elif [ $buildn -gt 0 ] && [ $env = UAT ]; then
+    echo "Download started for $Module-$env-$buildn-$(date +%d-%b) :- $(date +%T)"
+    pwd
+#   curl -u siddharth.ingle:11fb5fd3766920ced86f67c0df83ef2f1c https://apps.trigyn.com/jenkins2/job/$Module/$buildn/artifact/e-migrate-cdn-$branch.zip --output e-migrate-cdn-$branch-$(date +%d-%b).zip
+    curl http://192.168.150.8:8080/job/$Module/$buildn/artifact/e-migrate-cdn-$branch.zip --output e-migrate-cdn-$branch-$(date +%d-%b).zip
+	
+	file_size=$(stat -c %s "e-migrate-cdn-$branch-$(date +%d-%b).zip")
+	file_size_mb=$((file_size / 1024 / 1024))
+	echo "file_size= ${file_size}"
+	echo "${FileName} file_size in mb= ${file_size_mb}"	 
+	 
+	if [ ${file_size_mb} -gt 500 ]; then
+	
+    echo "Unzipping e-migrate-cdn-$branch-$(date +%d-%b).zip"
+    unzip e-migrate-cdn-$branch-$(date +%d-%b).zip -d ./cdn
+
+    echo "Copy cdn into ../html/emigrateUAT/assets"
+    cp -R cdn/assets/pdfs ../html/emigrateUAT/assets/
+	
+	else
+    echo "File size is less than 500MB Existed Shell"
+    fi
+	
+	
+else
+    echo "This file requires one command line argument  [ 1=BuildNumber eg. (./copyEmigrateUI.sh 41)]"
+fi
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+
+
+
+
+
+
+
+
+
+
+
+

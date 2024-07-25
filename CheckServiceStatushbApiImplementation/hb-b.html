@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HeartBeat</title>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.3/themes/base/jquery-ui.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+        .project {
+            position: absolute;
+            top: 0px;
+            left: 87px;
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            padding: 10px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            height: 90vh;
+            box-sizing: border-box;
+        }
+
+        fieldset {
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 5px;
+            width: 100%;
+            margin-bottom: 5px;
+            font-size: 0.85em;
+        }
+
+        legend {
+            font-size: 1em;
+            font-weight: bold;
+            color: #333;
+            padding: 0 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .input-container {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        select, input[type="text"], button {
+            font-size: 0.85em;
+            padding: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        select {
+            flex: 1;
+        }
+
+        input[type="text"] {
+            flex: 3;
+        }
+
+        button {
+            flex: 1;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 0.85em;
+            padding: 5px;
+        }
+
+        button:hover {
+            background-color: #218838;
+        }
+
+        .table-container {
+            flex-grow: 1;
+            overflow-y: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.83em;
+        }
+
+        th, td {
+            padding: 6px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        tr:hover {
+            background-color: #e6f7ff;
+        }
+
+        #dialog-confirm {
+            font-size: 0.85em;
+        }
+
+        #dialog-confirm .ui-icon {
+            background-image: url('https://code.jquery.com/ui/1.13.3/themes/base/images/ui-icons_ffffff_256x240.png');
+        }
+
+        .vpn-warning {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            background-color: #e7cd61;
+            color: #333;
+            padding: 5px;
+            border-radius: 5px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            font-size: 0.9em;
+        }
+    </style>
+    <script>
+        function checkIfBrowser() {
+            const userAgent = navigator.userAgent.toLowerCase();
+            const isBrowser = /chrome|firefox|safari|opera|edge/.test(userAgent);
+
+            if (!isBrowser || !('fetch' in window)) {
+                document.body.innerHTML = '<h1>Access Denied</h1><p>This page can only be opened in a browser.</p>';
+            }
+        }
+
+        function checkIfVsCode() {
+            const isVsCode = window.location.href.includes('vscode-webview');
+            if (isVsCode) {
+                document.body.innerHTML = '<h1>Access Denied</h1><p>This page cannot be opened in VS Code.</p>';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', (event) => {
+            checkIfBrowser();
+            checkIfVsCode();
+        });
+    </script>
+    <script src="https://code.jquery.com/jquery-3.1.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.3/jquery-ui.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.blockUI/2.70/jquery.blockUI.min.js" integrity="sha512-eYSzo+20ajZMRsjxB6L7eyqo5kuXuS2+wEbbOkpaur+sA2shQameiJiWEzCIDwJqaB0a4a6tCuEvCOBHUg3Skg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script>
+        $(document).ready(function() {
+            $("#txtPath").val($("#envSelect").val());
+        });
+
+        // Define the endpoints and environments
+        const apiEndpoints = [
+            'admin/hb',
+            'auth/hb',
+            'em/hb',
+            'fr/hb',
+            'gs/hb',
+            'is/hb',
+            'ns/hb',
+            'payment/hb',
+            'rs/hb',
+            'ra/hb',
+            'ss/hb',
+            'wf/process/hb'
+        ];
+
+        // Define the environments here
+        const environments = {
+            'Production': 'https://emigrate.gov.in/api/',
+            'App1': 'http://192.168.150.35:8080/api/',
+            'App2': 'http://192.168.150.22:8080/api/'
+        };
+
+        function setURLText(){
+            $("#txtPath").val($("#envSelect").val());
+        }
+
+        async function fetchAPIs() {
+            if(!$("#txtPath").val()){
+                $("#dialog-confirm").dialog({
+                    resizable: false,
+                    height: "auto",
+                    width: 400,
+                    modal: true,
+                    buttons: {					
+                        Ok: function() {
+                            $(this).dialog("close");
+                        }
+                    }
+                });
+                return;
+            }
+            $.blockUI({ 
+                message:"Loading..." 
+            });
+            
+            $("#apiDetailTable").find("tr:gt(0)").remove();
+            let tableRow = "";
+            let sequenceNumber = 1; // Initialize sequence number
+            for (const endpoint of apiEndpoints) {
+                console.log("Fetching : " + $("#txtPath").val() + endpoint)
+                tableRow = "<tr><td>" + sequenceNumber++ + "</td><td>" + endpoint + "</td>";
+                try {
+                    const startTime = performance.now();
+                    const response = await fetch($("#txtPath").val() + endpoint, {
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json'
+                        }
+                    });
+                    const endTime = performance.now();
+                    const responseTime = (endTime - startTime).toFixed(2) + ' ms';
+
+                    if (!response.ok) {
+                        tableRow += "<td colspan='7'>HTTP error! status: " + response.status + "</td></tr>";
+                        console.log('HTTP error! status:' + response.status);
+                    }
+
+                    const data = await response.json();
+                    tableRow += "<td>"+data['Service-Name']+"</td>";
+                    tableRow += "<td>"+data['Service-Version']+"</td>";				
+                    tableRow += "<td>"+data['Build-Number']+"</td>";			
+                    tableRow += "<td>"+data['Build-Date']+"</td>";			
+                    tableRow += "<td>"+data['Git-Branch']+"</td>";		
+                    tableRow += "<td>"+data['Git-Commit']+"</td>";
+                    tableRow += "<td>"+responseTime+"</td>";
+                } catch (error) {
+                    tableRow += "<td colspan='7'>Error: " + error.message +"</td></tr>";
+                    console.log('Error: ' + error.message);
+                }
+                tableRow += "</tr>";
+                $("#apiDetailTable").append(tableRow);
+            }
+            
+            $.unblockUI();
+        }
+
+        async function fetchBuildNumbers(url) {
+            let results = {};
+            for (const endpoint of apiEndpoints) {
+                try {
+                    const response = await fetch(url + endpoint, {
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json'
+                        }
+                    });
+
+                    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+
+                    const data = await response.json();
+                    results[endpoint] = {
+                        serviceName: data['Service-Name'],
+                        buildNumber: data['Build-Number']
+                    };
+                } catch (error) {
+                    console.log('Error:', error);
+                    results[endpoint] = {
+                        serviceName: 'Unknown',
+                        buildNumber: 'Error'
+                    };
+                }
+            }
+            return results;
+        }
+
+        async function compareBuildNumbers() {
+            const envUrls = Object.values(environments);
+            const envNames = Object.keys(environments);
+
+            // Fetch build numbers for each environment
+            const results = await Promise.all(envUrls.map(url => fetchBuildNumbers(url)));
+
+            let comparisonHtml = "<h3>Build Number Comparison</h3><table><tr><th>Endpoint</th><th>Service Name</th>";
+
+            // Add headers for each environment
+            envNames.forEach(name => {
+                comparisonHtml += `<th>${name} Build Number</th>`;
+            });
+
+            comparisonHtml += "</tr>";
+
+            for (const endpoint of apiEndpoints) {
+                comparisonHtml += `<tr><td>${endpoint}</td><td>${(results[0][endpoint] && results[0][endpoint].serviceName) || 'N/A'}</td>`;
+
+                envNames.forEach((name, index) => {
+                    const buildNumber = (results[index][endpoint] && results[index][endpoint].buildNumber) || 'N/A';
+                    comparisonHtml += `<td>${buildNumber}</td>`;
+                });
+
+                comparisonHtml += "</tr>";
+            }
+
+            comparisonHtml += "</table>";
+
+            $("#comparisonResults").html(comparisonHtml);
+            $("#comparisonDialog").dialog({
+                width: 'auto',
+                modal: true,
+                buttons: {
+                    Close: function() {
+                        $(this).dialog("close");
+                    }
+                }
+            });
+        }
+    </script>
+</head>
+<body>
+    <div class="project">Emigrate</div>
+    <div class="container">
+        <fieldset>
+            <legend>Environment</legend>
+            <div class="input-container">
+                <select id="envSelect" onchange="setURLText()">
+                    <option value="https://emigrate.gov.in/api/">Production</option>
+                    <option value="http://192.168.150.35:8080/api/">App1</option>
+                    <option value="http://192.168.150.22:8080/api/">App2</option>
+                    <option value="">Other</option>
+                </select>
+                <input type="text" id="txtPath" placeholder="Please select any environment" value="https://emigrate.gov.in/api/">
+                <button onclick="fetchAPIs()">Check HeartBeat</button>
+                <button onclick="compareBuildNumbers()">Compare Build Numbers</button>
+            </div>
+        </fieldset>
+
+        <div class="table-container">
+            <table id="apiDetailTable">
+                <tr>
+                    <th>No</th>
+                    <th>Path</th>
+                    <th>Service-Name</th>
+                    <th>Service-Version</th>
+                    <th>Build-Number</th>
+                    <th>Build-Date</th>
+                    <th>Git-Branch</th>
+                    <th>Git-Commit</th>
+                    <th>Response Time</th>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <div id="dialog-confirm" title="Empty Environment" style="display:none">
+        <p><span class="ui-icon ui-icon-alert" style="float:left; margin:2px 12px 20px 0;"></span>Please provide environment details</p>
+    </div>
+
+    <div id="comparisonDialog" title="Build Number Comparison" style="display:none">
+        <div id="comparisonResults"></div>
+    </div>
+
+    <div class="vpn-warning">
+        Note: App1 and App2 can be accessed only through VPN connection.
+    </div>
+</body>
+</html>

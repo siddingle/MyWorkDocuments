@@ -1,0 +1,500 @@
+   14  npm start
+   15  npm run package
+   16  npm start
+   17  npm run format:all
+   18  git status
+   19  git add .
+   20  git commit -m  "working on ghost template only transaltion left"
+   21  git checkout -b  "feature/Odi-ghost-template"
+   22  git pull origin develop
+   23  npm run package
+   24  npm run format:all
+   25  git status
+   26  git add .
+   27  git commit -m  "working on ghost template only transaltion left"
+   28  git push origin feature/Odi-ghost-template
+   29  npm start
+   30  npm start
+   31  npm start
+   32  npm run format:all
+   33  git status
+   34  git add .
+   35  git commit -m  "working on ghost template only transaltion done"
+   36  git push origin feature/Odi-ghost-template
+   37  git pull origin develop
+   38  npm run package
+   39  npm start
+   40  npm run format:all
+   41  git status
+   42  git add .
+   43  git commit -m  "working on ghost template only transaltion done pull form deve" 
+   44  git push origin feature/Odi-ghost-template
+   45  code .
+   46  npm start
+   47  npm start
+   48  npm run format:all
+   49  git status
+   50  git add .
+   51  git commit -m  "working on ghost done" 
+   52  git status
+   53  npm run format:all
+   54  git status
+   55  git add .
+   56  git commit -m  "working on ghost done" 
+   57  git checkout -b "feature/project-ghost-template"
+   58  git push origin  feature/project-ghost-template
+   59  git pull origin develop
+   60  git push origin  feature/project-ghost-template
+   61  checkout develop
+   62  git checkout develop
+   63  git checkout dev
+   64  npm i 
+   65  code .
+   66  ng s'
+   67  ng s
+   68  code .
+   69  ng s
+   70  git sttaus
+   71  git status
+   72  git pull origin dev
+   73  ng s
+   74  git checkout -b  "anjum-save-issue"
+   75  git status
+   76  git add .
+   77  git commit -m  "save functionlity done"
+   78  git push origin anjum-save-issue
+   79  git add .
+   80  git commit -m  "save functionlity done"
+   81  git push origin anjum-save-issue
+   82   npm run build 
+   83  git push origin anjum-save-issue
+   84   ng s
+   85  git status
+   86  git commit -m "working on issue"
+   87  git push origin anjum-save-issue
+   88  git pull origin dev
+   89   npm run build 
+   90  git status
+   91  git add .
+   92   npm run build 
+   93   npm run build 
+   94  n g s
+   95  ng s
+   96   npm run build 
+   97   npm run build 
+   98  git sttaus
+   99  git status
+  100  git add .
+  101  git commit -m  "issue solved"
+  102  git push origin anjum-save-issue
+  103  git checkout -b "edit-issue-anjum"
+  104  git pull origin dev
+  105  git push origin edit-issue-anjum
+  106  ng s
+  107  code .
+  108  ng s
+  109  git checkout dev
+  110  npm i
+  111  ng s
+  112  code .
+  113  ng s
+  114  git pull origin dev
+  115  code .
+  116  code .
+  117   ng s
+  118  git status
+  119  git add .
+  120  git commit -m "submit list PDF download issue solved"
+  121  git checkout -b  "pdf-issue-solved"
+  122  git push origin pdf-issue-solved
+  123  git pull origin dev
+  124   ng s
+  125  git add .
+  126  git commit -m "section 4 pdf issue solved"
+  127  git push origin pdf-issue-solved
+  128  git status
+  129  git pull origin dev
+  130   ng s
+  131  code .
+  132   git status
+  133  git pull origin dev
+  134  code .
+  135  ng s
+  136  git status
+  137  git add .
+  138  git commit -m  "section 4 rework "
+  139  git push origin pdf-issue-solved 
+  140  git pull origin dev
+  141  ng s
+  142  git status
+  143  code .
+  144  git status
+  145  git pull origin dev
+  146   ng s
+  147  git status
+  148  git add .
+  149  git commit -m  "MIS report issue solved"
+  150  git pull origin dev
+  151  git checkout -b  "MIS-Issue"
+  152  git status
+  153  git add .
+  154  git checkout -b  "MIS-Issue"
+  155  git push origin MIS-Issue
+  156  git branch
+  157  git checkout Caste-Survey
+  158  git pull origin Caste-Survey
+  159  npm i
+  160  code .
+  161  ng s
+  162  code .
+  163  code .
+  164  ng generate module home--routing
+  165  code .
+  166   ng s
+  167  git checkout -b "develop"
+  168  npm i bootstrap@5.2.3
+  169  ng s --o
+  170  code .
+  171  ng s
+  172  ng s
+  173  ng s
+  174  ng s
+  175  ng s
+  176  ng s
+  177  ng generate module home --routing
+  178  ng generate module shared --routing
+  179  code .
+  180  ng s
+  181  ng s
+  182  ng s
+  183  ng s --o
+  184  ng s --o
+  185  git status
+  186  git add .
+  187  git commit -m  " add first time"
+  188  git push origin master
+  189  git checkout develop
+  190  git status
+  191  git add .
+  192  git commit -m  "emigrate push first time"
+  193  git push origin develop
+  194  git push origin develop
+  195  git config --global user.name "Anjum Mohd"
+  196  git config --global user.email Anjum.Mohd@trigyn.com
+  197  git push origin develop
+  198  git push
+  199  git remote add emigrateui 'https://apps.trigyn.com/gitlab/emigrate/emigrateui'
+  200  git push
+  201  code .
+  202  git status
+  203  git add .
+  204  git commit -m "project code push"
+  205  git push
+  206  git branch
+  207  code .
+  208   ngv s
+  209  ng s
+  210  npm install primeng --save
+  211  npm install primeng --save --force
+  212  npm install primeicons --save
+  213  ng s
+  214  ng s
+  215  code .
+  216  code .
+  217  code .
+  218  git checkout -b "emigrante-anjum"
+  219  git status
+  220  git add .
+  221  git commit -m  "project code push"
+  222  git push origin emigrante-anjum
+  223  npm install primeng --save
+  224  npm install primeicons --save
+  225  ng s
+  226  npm install
+  227  ng s
+  228  ng s
+  229  git status
+  230  git add .
+  231  git push origin emigrante-anjum 
+  232  git add .
+  233  git commit -m  "project code push"
+  234  git push origin emigrante-anjum 
+  235  code .
+  236  git status
+  237  git add .
+  238  git commit -m  "add extension for project"
+  239  git push origin emigrante-anjum 
+  240  ng s
+  241  git checkout UI-ponraj
+  242  code .
+  243   ng s
+  244  git checkout emigrateui-sudhakar
+  245  code .
+  246  ng s
+  247  git checkout Branch name-UI-ponraj
+  248  git checkout  name-UI-ponraj
+  249  git checkout ponraj-ui-updates
+  250  ng s
+  251  git checkout ponraj-ui-updates
+  252  git branch
+  253   git all branch
+  254  git fetch
+  255  git fetch
+  256  git fetch
+  257  git pull
+  258  git checkout emigrante-anjum
+  259  git status
+  260  code .
+  261  git status
+  262  git add .
+  263  git commit -m "testing coee push"
+  264  git push
+  265  git push origin emigrante-anjum
+  266  code .
+  267  npm start
+  268  code .
+  269   git clone https://apps.trigyn.com/gitlab/emigrate/emigrate.git
+  270   git clone https://apps.trigyn.com/gitlab/emigrate/emigrate.git
+  271   git clone https://apps.trigyn.com/gitlab/emigrate/emigrate.git
+  272   git clone https://apps.trigyn.com/gitlab/emigrate/emigrate.git
+  273   git clone https://apps.trigyn.com/gitlab/emigrate/emigrate.git
+  274  npm instal
+  275  npm i
+  276  git checkout Release-1.0.0
+  277  npm i
+  278  npm run package
+  279  ng s
+  280  ng serve
+  281  npm i
+  282  npm run package
+  283  node -v
+  284  git reset
+  285  git pull origin Release-1.0.0
+  286  npm i
+  287  npm run package
+  288  npm i pkg-dir
+  289  npm run package
+  290  npm i -force
+  291  npm run package
+  292  npm run package --force
+  293  git clone https://apps.trigyn.com/gitlab/emigrate/emigrate.git
+  294   git checkout Release-1.0.0
+  295  git pull origin Release-1.0.0
+  296  npm i
+  297  ng s
+  298  npm run package
+  299  ng s
+  300  git pull origin Release-1.0.0
+  301  code .
+  302  ng s
+  303  git pull origin Release-1.0.0
+  304  ng s
+  305  npm i
+  306  ng s
+  307  code .
+  308  npm run package
+  309  ng s
+  310  npm run mock:server
+  311  git pull origin Release-1.0.0
+  312  npm run package
+  313  ng s
+  314  code .
+  315  git pull origin Release-1.0.0
+  316  npm run package
+  317  ng s
+  318  npm run mock:server
+  319  git pull origin Release-1.0.0
+  320  npm run package
+  321  code .
+  322   ng s
+  323  npm run package
+  324  git pull origin Release-1.0.0
+  325  npm run package
+  326  npm i
+  327  npm run package
+  328  npm run package
+  329   ng s
+  330  git pull origin Release-1.0.0
+  331  npm run package
+  332  npm run mock:server
+  333  npm i
+  334  ng s
+  335  git pull origin Release-1.0.0
+  336  ng s
+  337  npm run package
+  338  ng s
+  339  git pull origin Release-1.0.0
+  340  npm run build:all
+  341  npm run mock:server
+  342  code .
+  343  ng s
+  344  code .
+  345  npm run mock:server
+  346  code .
+  347  ng s
+  348  git pull origin Release-1.0.0
+  349  code .
+  350  ng s
+  351  git pull origin Release-1.0.0
+  352  npm run package
+  353  git pull origin Release-1.0.0
+  354  npm run package
+  355  ng s
+  356  code .
+  357  git pull origin Release-1.0.0
+  358  npm run package
+  359  npm i
+  360  git pull origin Release-1.0.0
+  361  npm run package
+  362  code .
+  363  code .
+  364  git pull origin Release-1.0.0
+  365  npm run package
+  366  npm run mock:server
+  367  git pull origin Release-1.0.0
+  368  npm run package
+  369  code .
+  370  ng s
+  371  git checkout emigrate-mohit
+  372  git pull origin emigrate-mohit
+  373  npm run package
+  374  ng s
+  375  npm run package
+  376  ng s
+  377  npm run package
+  378  ng s
+  379  git status
+  380  git add .
+  381  git commit -m "add menu navigation"
+  382  git push origin emigrate-mohit
+  383  ng s
+  384  npm run mock:server
+  385  npm run mock:server
+  386  git pull origin Release-1.0.0
+  387  git pull origin Release-1.0.0
+  388  git pull origin Release-1.0.0
+  389  code .
+  390  ng s
+  391  ng s
+  392  npm run package
+  393  ng s
+  394  npm run package
+  395  ng s
+  396  code .
+  397  git pull origin Release-1.0.0
+  398  npm run package
+  399  ng s
+  400  git branch
+  401  git checkout Release-1.0.0
+  402  git pull origin Release-1.0.0
+  403  npm run package
+  404  ng s
+  405  code .
+  406  git status
+  407  git pull origin Release-1.0.0
+  408  npm run package
+  409  ng s
+  410  npm run mock:server
+  411  npm run mock:server
+  412  code .
+  413  git status
+  414  git pull origin Release-1.0.0
+  415  npm run package
+  416  git status
+  417  git pull origin Release-1.0.0
+  418  npm run package
+  419  ng s
+  420  git pull origin Release-1.0.0
+  421  ng s
+  422  code .
+  423  git pull origin Release-1.0.0
+  424  npm run package
+  425  ng s
+  426  npm run mock:server
+  427  code .
+  428  git pull origin Release-1.0.0
+  429  npm run package
+  430  ng s
+  431  git pull origin Release-1.0.0
+  432  npm run package
+  433  code .
+  434  git add .
+  435  git commit -m  "space remove"
+  436  git pull origin Release-1.0.0
+  437  npm run package
+  438  ng s
+  439  code .
+  440  git pull origin Release-1.0.0
+  441  npm run package
+  442  code .
+  443  ng s
+  444  npm run package
+  445  ng s
+  446  npm run package
+  447  ng s
+  448  npm run package
+  449  ng s
+  450  npm run package
+  451  ng s
+  452  git add .
+  453  git commit -m  "creat-business-admin"
+  454  git pull origin Release-1.0.0
+  455  git checkout -b  "business-admin-module"
+  456  git push origin business-admin-module 
+  457  git status
+  458  git add .
+  459  git status
+  460  git add.
+  461  git add .
+  462  git checkout -b  "business-admin-module"
+  463  git commit -m  "creat-business-admin"
+  464  git push origin business-admin-module 
+  465  ng s
+  466  git status
+  467  git add .
+  468  git commit -m  "working on P-table common'"
+  469  git push origin business-admin-module 
+  470  ng s
+  471  git add .
+  472  git commit -m  "working on P-table common"
+  473  git push origin business-admin-module 
+  474  git status
+  475  git pull origin Release-1.0.0
+  476  git pull origin Release-1.0.0
+  477  code .
+  478  git sttaus
+  479  git branch
+  480  git checkout  Release-1.0.0
+  481  git pull origin Release-1.0.0
+  482  npm run package
+  483  code .
+  484  git status
+  485  code .
+  486  git pull origin Release-1.0.0
+  487  npm run package
+  488  code .
+  489  ng s
+  490  npm run package
+  491  npm run package
+  492  ng s
+  493  git clone https://apps.trigyn.com/gitlab/emigrate/emigrate.git
+  494  git checkout Release-1.0.0
+  495  git pull origin Release-1.0.0
+  496  npm install
+  497  npm run package
+  498  npm i @angular-devkit/build-ng-packagr
+  499  code .
+  500  code .
+  501  git branh
+  502  git branch
+  503  git checout Release-1.0.0
+  504  git checkout Release-1.0.0
+  505  git pull origin Release-1.0.0
+  506  npm run package
+  507  ng s -c:clientUat
+  508  ng s -c clientUat
+  509  history
+  510  ng build:clientUat
+  511  ng run build : clientUat
+  512  history
+  513  history > build

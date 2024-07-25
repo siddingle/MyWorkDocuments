@@ -1,0 +1,74 @@
+	disk management
+ DISKMGMT.MSC
+cls    clear screen
+
+jenkins
+ 
+C:\Users\Siddharth Igle\.jenkins\secrets\initialAdminPassword
+
+
+
+
+
+
+
+
+
+
+
+DevOps setup for fail fast
+
+elicpse IDE
+help-->eclipse marketplace---> 
+
+install findbug      identify the bug after application fails
+install sonarlint     code coverage  it helps to fix quality issue as we write a code
+install docker        utilize to write a script 
+
+
+
+
+
+Git Commands 
+git branch --list                branch list
+git branch branchname            it will create a branch
+git branch -d branchname        it will delete a branch  
+git checkout -b branchname       select the branch    
+git merge branchname             it will merge the branch 
+
+
+mkdir anyname                   create directory  
+cd filename                     select the directory 
+git init                        initilize git repository 
+git status                      it will show any commit which has been made and what files are there which are not track
+notepad anyname                 creating file using notepad
+git add filename                it will add file to track but it will not commit
+git commit -m "any name"        it will commit the file with a particular message
+git log                         it will show all the commit which has been made and details of author time 
+git log --oneline---            log in one line
+git show                        it will show commit id
+git show commitid               it will show the details of commit id
+git reset --hard commitid       it will reset as per that current id will remove all the current it  
+git rm --cached file name       it will unstage the file   
+git add .                       it will add files for staging which are present 
+git remote add origin <url>     it will bind local repository with global repository --aftter creating a github repository
+git remote -v                   it will show binding 
+git pull --allow-unrelated-histories   --   it will add global repository into local repository
+git clone url from remote repository eg <code>  ---  select the path fst in command thna type this command to clone the file
+git diff                        we can check uncommited changes that we made after commiting file
+git rev -n <log commit id>      revert the changes which has been made
+
+
+
+git clone using SSH
+
+ssh-keygen -t <anyname> -C "comment"
+passphrase                                      to secure ur push and pull
+ ssh-keygen -E md5 _lf ~/.ssh/id_rsa.pub       u can check  with gitlab weather pub key  id are same or not from setting/sshkey add it
+cat ~/.ssh/id_rsa.pub                              to get pub key    copy paste in gitlab
+git clone <ssh>                                   add ssh from repository
+
+
+
+ 
+

@@ -1,0 +1,71 @@
+waterfall model                    iterative model          
+1 simple                         1 limited intialize specification
+2 pre planning required          2 less info required to start 
+3 not incremental cannot         3 multiple requirements run simultaneously
+ change requirements             4 parallel development 
+4 static technology              5 good for large project 
+5  good for short project
+
+
+agile model 
+iterative + incremental 
+rapid delivery
+brief iteration
+
+
+benifits 
+teamwork
+rapid development
+minimal planning
+easily managed
+working increments
+
+
+DevOps
+
+plan --code -- build --test--release--diploy--operate--monitor--feedback--plan--code--build
+it is process which has intersection between development and operations team
+it is strategy which adopts Agile methodolgy in which we can create incremental good qualtiy of product 
+
+Devops is process of delivering application in fast and reliable manner
+devops is responsible for applcation building testing deployement and after monitering and logging 
+
+benefits
+collaboration between the team  communication feedback
+improve security
+empowered developers
+customer inovolment
+continuos delivery
+1 discipline palnning
+2 informed decision making
+3 CI
+4 improve realibilty- continuos monitoring
+5 accelerated testing
+6 reduce maintenace cost
+7 better performance
+8 greter consistency
+9 continuos scalability
+10 faster response
+
+CI continuos integration  ---    continuos building and testing    code file will get builded in the form of t is usable by user
+CD continuos deployment ---    continuos realease and diploy 
+ 
+
+
+benifits
+increases productivity
+speed
+collaboration between ops and dev
+quality of product
+reduces load
+increases business
+
+
+
+GREENFILED SERVICE    it is nothing but creating a whole new project                 
+BROWNFIELD SERVICE    it is nothing but redeveloping something maintaining making changes to existing one
+
+
+
+
+

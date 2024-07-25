@@ -1,0 +1,105 @@
+<configuration debug="true" scan="true" scanPeriod="10 minutes">
+   <property name="spring.application.name" value="service" scope="context"/>
+      <property name="serverIp" value="192.168.70.50" />
+	<property name="AUDIT_LOG" value="AuditLog.log"/>
+	
+     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%green(example-project) - %cyan(%date [%thread] %-5level %logger{36}) - %message : %magenta([DEVICE_ID=%X{device_id}] [DEVICE_NAME=%X{device_name}] [DEVICE_OS=%X{device_os}] [APP_VER=%X{app_version}] [DEVICE_LANG=%X{device_language}] [IP=%X{ip}] [PORT=%X{port}] [USER_AGENT=%X{user_agent}] [AUTH=%X{auth}] [TX_ID=%X{tx_id}] [CLIENT_ID=%X{client_id}]%n)
+            </pattern>
+        </encoder>
+    </appender> 
+    <appender name="STASH" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+            <destination>192.168.150.19:5044</destination>
+            <destination>192.168.150.41:5044</destination>   
+     <!-- You can add multiple destination values -->
+<!--        <destination>100.100.10.100:55525</destination>
+        <destination>100.100.10.101:55525</destination>       --> 
+        <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+            <providers>
+                <timestamp/>
+                <version/> <!-- Logstash json format version, the @version field in the output-->
+                <mdc/> <!-- MDC variables on the Thread will be written as JSON fields-->
+                <context/> <!--Outputs entries from logback's context -->
+                <logLevel/>
+                <loggerName/>
+                <pattern> <!-- we can add some custom fields to be sent with all the log entries. make filtering easier in Logstash-->
+                    <pattern>
+                        {
+                            "appName": "AuthenticationService",
+                            "server":"192.168.70.50"
+                            
+                        }
+                    </pattern>
+                </pattern>
+                <threadName/>
+                <message/>
+                <logstashMarkers/> <!-- Useful so we can add extra information for specific log lines as Markers-->
+                <arguments/> <!--or through StructuredArguments-->
+                <stackTrace/>
+            </providers>
+        </encoder>
+    </appender>
+	
+	
+    <appender name="AUDIT_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>../../logs/audit/${AUDIT_LOG}</file>
+
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>../../logs/archived/AuditLog/AuditLog.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <!-- each archived file, size max 2MB -->
+			<maxFileSize>2MB</maxFileSize>
+            <!-- total size of all archive files, if total size > 200MB, 
+				it will delete old archived file -->
+            <totalSizeCap>200MB</totalSizeCap>
+            <!-- 30 days to keep -->
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+
+        <encoder>
+            <pattern> %d  - %X{TRNS_ID} -  %p %c{1.} [%t] %m%n</pattern>
+        </encoder>
+    </appender> 
+	
+    <appender name="AUDIT_LOG_STASH" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+            <destination>192.168.150.19:5045</destination>
+            <destination>192.168.150.41:5045</destination>
+ 	<encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+            <providers>
+                <timestamp/>
+                <version/> <!-- Logstash json format version, the @version field in the output-->
+                <mdc/> <!-- MDC variables on the Thread will be written as JSON fields-->
+                <context/> <!--Outputs entries from logback's context -->
+                <logLevel/>
+                <loggerName/>
+                <pattern> <!-- we can add some custom fields to be sent with all the log entries. make filtering easier in Logstash-->
+                    <pattern>
+                        {
+                            "appName": "AuthenticationService",
+                            "server":"192.168.70.50"
+                            
+                        }
+                    </pattern>
+                </pattern>
+                <threadName/>
+                <message/>
+                <logstashMarkers/> <!-- Useful so we can add extra information for specific log lines as Markers-->
+                <arguments/> <!--or through StructuredArguments-->
+                <stackTrace/>
+            </providers>
+        </encoder>
+    </appender>
+
+	<logger name="audit-log" level="info" additivity="false">
+        <appender-ref ref="AUDIT_LOG_STASH"/>
+        <appender-ref ref="AUDIT_LOG"/>
+		<appender-ref ref="STASH"/>	
+    </logger>
+
+    <root level="warn">
+        <appender-ref ref="STASH"/>	
+    </root>
+
+</configuration>
+
+

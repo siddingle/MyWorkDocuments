@@ -1,0 +1,65 @@
+#!/bin/bash
+
+
+declare -A emigrate_services=(
+    ["http://127.0.0.1:8081/admin/hb"]="AdministrationService"
+    ["http://127.0.0.1:8181/auth/hb"]="AuthenticationService"
+    ["http://127.0.0.1:8084/em/hb"]="EmigrantService"
+    ["http://127.0.0.1:8083/fr/hb"]="ForeinRecruiterService"
+    ["http://127.0.0.1:8080/gws/hb"]="GatewayService"
+    ["http://127.0.0.1:8092/gs/hb"]="GrievanceService"
+    ["http://127.0.0.1:8096/is/hb"]="InsuranceService"
+    ["http://127.0.0.1:8086/ns/hb"]="NotificationService"
+    ["http://127.0.0.1:8094/payment/hb"]="PaymentService"
+    ["http://127.0.0.1:8085/rs/hb"]="ReportService"
+    ["http://127.0.0.1:8082/ra/hb"]="RecrutingAgentService"
+    ["http://127.0.0.1:8087/ss/hb"]="SecurityService"
+    ["http://127.0.0.1:8088/wf/process/hb"]="WorkflowService"
+
+)
+
+declare -A run_messages=(
+    ["http://127.0.0.1:8081/admin/hb"]="2RunSvrJarAdmin.sh"
+    ["http://127.0.0.1:8181/auth/hb"]="3RunSvrJarAuthentication.sh"
+    ["http://127.0.0.1:8084/em/hb"]="6RunSvrJarEmigrant.sh"
+    ["http://127.0.0.1:8083/fr/hb"]="7RunSvrJarForeignEmployer.sh"
+    ["http://127.0.0.1:8080/gws/hb"]="1RunSvrJarGateway-api.sh"
+    ["http://127.0.0.1:8092/gs/hb"]="12RunSvrJarGrievanceService.sh"
+    ["http://127.0.0.1:8096/is/hb"]="15RunSvrJarInsurance.sh"
+    ["http://127.0.0.1:8086/ns/hb"]="9RunSvrJarNotification.sh"
+    ["http://127.0.0.1:8094/payment/hb"]="14RunSvrJarPayment.sh"
+    ["http://127.0.0.1:8085/rs/hb"]="10RunSvrJarReport.sh"
+    ["http://127.0.0.1:8082/ra/hb"]="8RunSvrJarRecruitAgent.sh"
+    ["http://127.0.0.1:8087/ss/hb"]="4RunSvrJarSecurity.sh"
+    ["http://127.0.0.1:8088/wf/process/hb"]="5RunSvrJarWorkflow.sh"
+    )
+
+for url in "${!emigrate_services[@]}"; do
+    service_name="${emigrate_services[$url]}"
+    message="${run_messages[$url]}"
+
+    # Set timeout for curl
+    timeout=7
+
+    # Make the curl request with the timeout
+    json=$(curl -s -m "$timeout" -w "%{http_code}" -o /dev/stdout "$url")
+    response=$(curl -s -m "$timeout" -o /dev/null -w "%{http_code}" "$url")
+
+    # Check if curl was successful and response code is 200
+    if [ $? -eq 0 ] && [ "$response" -eq 200 ]; then
+        if [ -z "$response" ]; then
+            echo "Curl did not provide any response or got stuck."
+            echo "$service_name is down please run $message"
+        else
+            echo -e "$service_name -->  \e[1;32m Successful \e[0m"
+            echo "$json"
+            echo "-----------------------------------------------------------------------------------------"
+          fi
+    else
+       # echo "!!!!!!!!!!!!!SERVICE FAILED!!!!!!!!!!!!!!"
+        echo -e "$service_name -->  \e[1;31m DOWN \e[0m"
+        echo "$json"
+        echo -e "\e[1;31m $service_name is down please run $message \e[0m"
+
+    fi
+done
